@@ -31,8 +31,8 @@ Our primary goal is to identify the key variables that significantly influence a
 
 The dataset used for this project can be found at [Apple App Store Dataset](https://www.kaggle.com/datasets/gauthamp10/apple-appstore-apps).
 
-- Number of observations (roughly): 1,230,377
-- Number of features: 20
+- Number of observations (roughly): 1,230,376
+- Number of features: 21
 
 ## GitHub Repository
 
