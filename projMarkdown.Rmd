@@ -34,3 +34,8 @@ numerical_data <- appData[, numerical_cols]
 numerical_data
 ```
 
+
+```{r}
+appData <- subset(appData, !is.na(App_Name))
+```
+
