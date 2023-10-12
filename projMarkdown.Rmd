@@ -1,6 +1,6 @@
 ---
 title: "DATS-6101"
-author: "Shashank"
+author: "GROUP 7"
 date: "2023-10-12"
 output: html_document
 ---
@@ -8,23 +8,29 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ezids)
-
 ```
-
 ```{r}
+#Reading the Apple App Data CSV into the data frame.
 appData = read.csv('appleAppData.csv')
 ```
 ```{r}
+#Dimenstions of the data frame.
 dim(appData)
 ```
 
 ```{r}
+#Summary of the dataset 
 summary(appData)
+#First five observations of the data frame
 head(appData,5)
+#Last five observations of the data frame
+tail(appData,5)
 ```
+
 ```{r}
+#Listing the numerical variables(columns) 
 numerical_cols <- sapply(appData, is.numeric)
 numerical_data <- appData[, numerical_cols]
-
+numerical_data
 ```
 
