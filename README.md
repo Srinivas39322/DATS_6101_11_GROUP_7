@@ -1,7 +1,7 @@
 # DATS_6101_11_GROUP_7
 Certainly, here's a sample README file for your project:
 
-# Analytical Insights into iOS App Profitability
+# Analytical Insights into iOS App Profitability: A Comprehensive Study of the Apple App Store
 
 ## Team Members
 - Krishnasurya Gopalakrishnan
