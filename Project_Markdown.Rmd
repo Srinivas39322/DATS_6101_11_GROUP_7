@@ -1,0 +1,67 @@
+---
+title: "Project_Markdown"
+author: "Srinivas Tenneti"
+date: "2023-10-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ezids)
+```
+
+```{r}
+appData = read.csv('appleAppData.csv')
+```
+```{r}
+dim(appData)
+```
+
+```{r}
+summary(appData)
+head(appData,5)
+```
+```{r}
+numerical_cols <- sapply(appData, is.numeric)
+numerical_data <- appData[, numerical_cols]
+
+```
+
+```{r}
+missing_values <- sum(is.na(appData))
+cat("Total missing values in the dataset:", missing_values, "\n")
+missing_values_per_column <- colSums(is.na(appData))
+cat("Missing values per column:\n")
+print(missing_values_per_column)
+```
+
+```{r}
+# Assuming "Developer_Url" is the column you want to check
+developer_url_column <- appData$Developer_Url
+
+# Count the number of blank columns
+blank_columns <- sum(is.na(developer_url_column) | developer_url_column == "")
+cat("Number of blank columns in 'Developer_Url':", blank_columns, "\n")
+```
+
+
+```{r}
+# Assuming "Developer_Website" is the column you want to check
+developer_website_column <- appData$Developer_Website
+
+# Count the number of blank values
+blank_values <- sum(is.na(developer_website_column) | developer_website_column == "")
+cat("Number of blank values in 'Developer_Website':", blank_values, "\n")
+```
+
+```{r}
+special_char_pattern <- "[^A-Za-z0-9\\s]+"
+developer_with_special_chars <- appData$Developer[grepl(special_char_pattern, appData$Developer, ignore.case = TRUE)]
+if (length(developer_with_special_chars) > 0) {
+  cat("Values containing special characters found in the 'Developer' column:\n")
+  print(developer_with_special_chars)
+} else {
+  cat("No values containing special characters found in the 'Developer' column.\n")
+}
+```
+
