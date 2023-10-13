@@ -52,7 +52,7 @@ dim(appData)
 ```{r}
 summary(appData)
 ```
-#First five and Last Five observations of the data frame
+#First five and Last five observations of the data frame
 ```{r}
 head(appData,5)
 tail(appData,5)
@@ -75,5 +75,30 @@ numerical_data
 #Removing the NA value in the column AppNAme
 ```{r}
 appData <- subset(appData, !is.na(App_Name))
+```
+
+```{r}
+missing_values <- sum(is.na(appData))
+cat("Total missing values in the dataset:", missing_values, "\n")
+missing_values_per_column <- colSums(is.na(appData))
+cat("Missing values per column:\n")
+print(missing_values_per_column)
+```
+
+```{r}
+# Count the number of blank values in Developer_Url
+developer_url_column <- appData$Developer_Url
+
+blank_columns <- sum(is.na(developer_url_column) | developer_url_column == "")
+cat("Number of blank columns in 'Developer_Url':", blank_columns, "\n")
+```
+
+
+```{r}
+# Count the number of blank values in Developer_Website
+developer_website_column <- appData$Developer_Website
+
+blank_values <- sum(is.na(developer_website_column) | developer_website_column == "")
+cat("Number of blank values in 'Developer_Website':", blank_values, "\n")
 ```
 
