@@ -1,40 +1,78 @@
----
+-------------------
 title: "DATS-6101"
 author: "GROUP 7"
 date: "2023-10-12"
-output: html_document
----
+output: 
+  html_document:
+    code_folding: hide
+    number_sections: false
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+--------------------
+Our Project uses a Apple Appstore data which has 21 columns. The variables are:
+App_Id
+App_Name
+AppStore_Url
+Primary_Genre
+Content_Rating
+Size_Bytes
+Required_IOS_Version
+Released
+Updated
+Version
+Price
+Currency
+Free
+DeveloperId
+Developer
+Developer_Url
+Developer_Website
+Average_User_Rating
+Reviews
+Current_Version_Score
+Current_Version_Reviews
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ezids)
 ```
-```{r}
 #Reading the Apple App Data CSV into the data frame.
+```{r}
 appData = read.csv('appleAppData.csv')
 ```
-```{r}
 #Dimenstions of the data frame.
+```{r}
 dim(appData)
 ```
-
+#Summary of the dataset
 ```{r}
-#Summary of the dataset 
 summary(appData)
-#First five observations of the data frame
+```
+#First five and Last Five observations of the data frame
+```{r}
 head(appData,5)
-#Last five observations of the data frame
 tail(appData,5)
 ```
-
+#Listing the numerical variables(columns)
 ```{r}
-#Listing the numerical variables(columns) 
 numerical_cols <- sapply(appData, is.numeric)
 numerical_data <- appData[, numerical_cols]
 numerical_data
 ```
+#Check for missing values in the datset
+```{r}
+
+```
+
+#A barplot showing the number of missing values
+#Removing the attribute having the highest missing values.
 
 
+#Removing the NA value in the column AppNAme
 ```{r}
 appData <- subset(appData, !is.na(App_Name))
 ```
