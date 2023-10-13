@@ -68,13 +68,9 @@ numerical_data
 
 ```
 
-#A barplot showing the number of missing values
-#Removing the attribute having the highest missing values.
-
-
 #Removing the NA value in the column AppNAme
 ```{r}
-appData <- subset(appData, !is.na(App_Name))
+#appData <- subset(appData, !is.na(App_Name))
 ```
 
 ```{r}
@@ -102,3 +98,68 @@ blank_values <- sum(is.na(developer_website_column) | developer_website_column =
 cat("Number of blank values in 'Developer_Website':", blank_values, "\n")
 ```
 
+#A single code to check all missing values in our dataset:
+```{r}
+# Assuming 'appData' is your dataset
+
+# Total missing values in the dataset
+missing_values <- sum(is.na(appData))
+cat("Total missing values in the dataset:", missing_values, "\n")
+
+# Missing values per column
+missing_values_per_column <- colSums(is.na(appData))
+cat("Missing values per column:\n")
+print(missing_values_per_column)
+
+# Number of missing values in 'Developer_Url' column
+blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
+cat("Number of missing values in 'Developer_Url' column:", blank_developer_url, "\n")
+
+# Number of missing values in 'Developer_Website' column
+blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
+cat("Number of missing values in 'Developer_Website' column:", blank_developer_website, "\n")
+
+```
+
+#A barplot showing the number of missing values
+```{r}
+# Load required library
+library(ggplot2)
+
+# Calculate missing values per column
+missing_values_per_column <- colSums(is.na(appData))
+
+# Create a data frame with column names and missing values
+missing_data <- data.frame(Column = names(missing_values_per_column),
+                           MissingValues = missing_values_per_column)
+
+ggplot(missing_data, aes(x = Column, y = MissingValues)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Column Names", y = "Number of Missing Values", 
+       title = "Number of Missing Values in the dataset")
+
+```
+
+
+```{r}
+# Calculate the number of missing values in 'Developer_Url' and 'Developer_Website' columns
+blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
+blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
+
+# Create a data frame for plotting
+missing_data <- data.frame(
+  Column = c('Developer_Url', 'Developer_Website'),
+  Missing_Values = c(blank_developer_url, blank_developer_website)
+)
+
+
+# Create a bar plot
+ggplot(missing_data, aes(x = Column, y = Missing_Values, fill = Column)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of Missing Values in Columns",
+       x = "Column Names",
+       y = "Number of Missing Values") +
+  theme_minimal()
+
+```
