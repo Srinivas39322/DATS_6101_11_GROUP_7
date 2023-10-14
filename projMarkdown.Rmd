@@ -9,39 +9,41 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: yes
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
+  #pdf_document:
+   # toc: yes
+    #toc_depth: '3'
 ---
 Our Project uses a Apple Appstore data which has 21 columns.
 
 The variables are:
-App_Id
-App_Name
-AppStore_Url
-Primary_Genre
-Content_Rating
-Size_Bytes
-Required_IOS_Version
-Released
-Updated
-Version
-Price
-Currency
-Free
-DeveloperId
-Developer
-Developer_Url
-Developer_Website
-Average_User_Rating
-Reviews
-Current_Version_Score
-Current_Version_Reviews
+
+1.  App_Id
+2.  App_Name
+3.  AppStore_Url
+4.  Primary_Genre
+5.  Content_Rating
+6.  Size_Bytes
+7.  Required_IOS_Version
+8.  Released
+9.  Updated
+10. Version
+11. Price
+12. Currency
+13. Free
+14. DeveloperId
+15. Developer
+16. Developer_Url
+17. Developer_Website
+18. Average_User_Rating
+19. Reviews
+20. Current_Version_Score
+21. Current_Version_Reviews
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ezids)
 library(tidyr)
+library(lubridate)
 ```
 
 ### Reading the Apple App Data CSV into the data frame
@@ -63,15 +65,25 @@ summary(appData)
 ### First five and Last five observations of the data frame
 
 ```{r}
-head(appData,5)
-tail(appData,5)
+head(appData,2)
+tail(appData,2)
 ```
-### Listing the numerical variables(columns)
+### Listing the numerical and categorical variables(columns)
 
 ```{r}
 numerical_cols <- sapply(appData, is.numeric)
-numerical_data <- appData[, numerical_cols]
-# numerical_data
+numerical_colnames <- names(appData)[numerical_cols]
+
+categorical_colnames <- names(appData)[!numerical_cols]
+
+max_length <- max(length(numerical_colnames), length(categorical_colnames))
+
+numerical_colnames <- c(numerical_colnames, rep(NA, max_length - length(numerical_colnames)))
+categorical_colnames <- c(categorical_colnames, rep(NA, max_length - length(categorical_colnames)))
+
+var_df <- data.frame(Numeric = numerical_colnames, Categorical = categorical_colnames)
+
+print(var_df)
 ```
 
 ### Removing the NA value in the column AppNAme
@@ -91,26 +103,19 @@ print(missing_values_per_column)
 ```
 
 ```{r}
-# Count the number of blank values in Developer_Url
-developer_url_column <- appData$Developer_Url
-
-blank_columns <- sum(is.na(developer_url_column) | developer_url_column == "")
-cat("Number of blank columns in 'Developer_Url':", blank_columns, "\n")
-```
-
-
-```{r}
-# Count the number of blank values in Developer_Website
-developer_website_column <- appData$Developer_Website
-
-blank_values <- sum(is.na(developer_website_column) | developer_website_column == "")
-cat("Number of blank values in 'Developer_Website':", blank_values, "\n")
 ```
 
 ### Checking all missing values in the dataset
 ```{r}
-# Assuming 'appData' is your dataset
+na_counts <- sapply(appData, function(col) sum(is.na(col)))
 
+blank_counts <- sapply(appData, function(col) sum(col == "" | col == " "))
+
+result <- data.frame(Column = names(appData), NA_Count = na_counts, Blank_Count = blank_counts)
+print(result)
+```
+
+```{r}
 # Total missing values in the dataset
 missing_values <- sum(is.na(appData))
 cat("Total missing values in the dataset:", missing_values, "\n")
@@ -232,4 +237,13 @@ print(missing_values_per_column <- colSums(is.na(appData)))
 
 ```{r}
 print(sum(duplicated(appData)))
+```
+
+###Converting object format to time format
+
+```{r}
+appData$Updated <- format(ymd_hms(appData$Updated), "%m-%d-%Y %H:%M:%S")
+appData$Released <- format(ymd_hms(appData$Released), "%m-%d-%Y %H:%M:%S")
+
+print(head(appData,1))
 ```
