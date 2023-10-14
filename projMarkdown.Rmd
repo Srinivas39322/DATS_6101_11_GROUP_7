@@ -1,4 +1,4 @@
--------------------
+---
 title: "DATS-6101"
 author: "GROUP 7"
 date: "2023-10-12"
@@ -9,73 +9,90 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: yes
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
---------------------
-Our Project uses a Apple Appstore data which has 21 columns. The variables are:
-App_Id
-App_Name
-AppStore_Url
-Primary_Genre
-Content_Rating
-Size_Bytes
-Required_IOS_Version
-Released
-Updated
-Version
-Price
-Currency
-Free
-DeveloperId
-Developer
-Developer_Url
-Developer_Website
-Average_User_Rating
-Reviews
-Current_Version_Score
-Current_Version_Reviews
+  #pdf_document:
+   # toc: yes
+    #toc_depth: '3'
+---
+Our Project uses a Apple Appstore data which has 21 columns.
+
+The variables are:
+
+1.  App_Id
+2.  App_Name
+3.  AppStore_Url
+4.  Primary_Genre
+5.  Content_Rating
+6.  Size_Bytes
+7.  Required_IOS_Version
+8.  Released
+9.  Updated
+10. Version
+11. Price
+12. Currency
+13. Free
+14. DeveloperId
+15. Developer
+16. Developer_Url
+17. Developer_Website
+18. Average_User_Rating
+19. Reviews
+20. Current_Version_Score
+21. Current_Version_Reviews
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ezids)
+library(tidyr)
+library(lubridate)
 ```
-#Reading the Apple App Data CSV into the data frame.
+
+### Reading the Apple App Data CSV into the data frame
+
 ```{r}
 appData = read.csv('appleAppData.csv')
 ```
-#Dimenstions of the data frame.
+
+### Dimenstions of the data frame
+
 ```{r}
 dim(appData)
 ```
-#Summary of the dataset
+### Summary of the dataset
+
 ```{r}
 summary(appData)
 ```
-#First five and Last five observations of the data frame
+### First five and Last five observations of the data frame
+
 ```{r}
-head(appData,5)
-tail(appData,5)
+head(appData,2)
+tail(appData,2)
 ```
-#Listing the numerical variables(columns)
+### Listing the numerical and categorical variables(columns)
+
 ```{r}
 numerical_cols <- sapply(appData, is.numeric)
-numerical_data <- appData[, numerical_cols]
-numerical_data
+numerical_colnames <- names(appData)[numerical_cols]
+
+categorical_colnames <- names(appData)[!numerical_cols]
+
+max_length <- max(length(numerical_colnames), length(categorical_colnames))
+
+numerical_colnames <- c(numerical_colnames, rep(NA, max_length - length(numerical_colnames)))
+categorical_colnames <- c(categorical_colnames, rep(NA, max_length - length(categorical_colnames)))
+
+var_df <- data.frame(Numeric = numerical_colnames, Categorical = categorical_colnames)
+
+print(var_df)
 ```
-#Check for missing values in the datset
-```{r}
 
-```
+### Removing the NA value in the column AppNAme
 
-#A barplot showing the number of missing values
-#Removing the attribute having the highest missing values.
-
-
-#Removing the NA value in the column AppNAme
 ```{r}
 appData <- subset(appData, !is.na(App_Name))
 ```
+
+### Check for missing values in the datset
 
 ```{r}
 missing_values <- sum(is.na(appData))
@@ -86,19 +103,147 @@ print(missing_values_per_column)
 ```
 
 ```{r}
-# Count the number of blank values in Developer_Url
-developer_url_column <- appData$Developer_Url
+```
 
-blank_columns <- sum(is.na(developer_url_column) | developer_url_column == "")
-cat("Number of blank columns in 'Developer_Url':", blank_columns, "\n")
+### Checking all missing values in the dataset
+```{r}
+na_counts <- sapply(appData, function(col) sum(is.na(col)))
+
+blank_counts <- sapply(appData, function(col) sum(col == "" | col == " "))
+
+result <- data.frame(Column = names(appData), NA_Count = na_counts, Blank_Count = blank_counts)
+print(result)
+```
+
+```{r}
+# Total missing values in the dataset
+missing_values <- sum(is.na(appData))
+cat("Total missing values in the dataset:", missing_values, "\n")
+
+# Missing values per column
+missing_values_per_column <- colSums(is.na(appData))
+cat("Missing values per column:\n")
+print(missing_values_per_column)
+
+# Number of missing values in 'Developer_Url' column
+blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
+cat("Number of missing values in 'Developer_Url' column:", blank_developer_url, "\n")
+
+# Number of missing values in 'Developer_Website' column
+blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
+cat("Number of missing values in 'Developer_Website' column:", blank_developer_website, "\n")
+
+```
+
+### Barplot showing the number of missing values
+```{r}
+# Load required library
+library(ggplot2)
+
+# Calculate missing values per column
+missing_values_per_column <- colSums(is.na(appData))
+
+# Create a data frame with column names and missing values
+missing_data <- data.frame(Column = names(missing_values_per_column),
+                           MissingValues = missing_values_per_column)
+
+ggplot(missing_data, aes(x = Column, y = MissingValues)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Column Names", y = "Number of Missing Values", 
+       title = "Number of Missing Values in the dataset")
+
 ```
 
 
 ```{r}
-# Count the number of blank values in Developer_Website
-developer_website_column <- appData$Developer_Website
+# Calculate the number of missing values in 'Developer_Url' and 'Developer_Website' columns
+blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
+blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
 
-blank_values <- sum(is.na(developer_website_column) | developer_website_column == "")
-cat("Number of blank values in 'Developer_Website':", blank_values, "\n")
+# Create a data frame for plotting
+missing_data <- data.frame(
+  Column = c('Developer_Url', 'Developer_Website'),
+  Missing_Values = c(blank_developer_url, blank_developer_website)
+)
+
+
+# Create a bar plot
+ggplot(missing_data, aes(x = Column, y = Missing_Values, fill = Column)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of Missing Values in Columns",
+       x = "Column Names",
+       y = "Number of Missing Values") +
+  theme_minimal()
+
+```
+### Dropping Developer_Website column
+
+```{r}
+# Dropping Developer_Website column
+appData = subset(appData, select = -c(Developer_Website))
+head(appData, 1)
 ```
 
+### Updating Price and Size_Bytes columns' NA values with mean
+
+```{r}
+df_p_sb <- subset(appData, select=c("Price", "Size_Bytes"))
+head(df_p_sb, 1)
+meanvals <- as.list(colMeans(df_p_sb, na.rm = TRUE))
+print(meanvals)
+df_p_sb <- replace_na(df_p_sb, meanvals)
+head(df_p_sb, 1)
+appData = subset(appData, select = -c(Price))
+appData = subset(appData, select = -c(Size_Bytes))
+appData <- cbind(appData, Price = df_p_sb$Price)
+appData <- cbind(appData, Size_Bytes = df_p_sb$Size_Bytes)
+head(appData, 1)
+```
+```{r}
+# write.csv(appData, "C:\\Users\\Krishnasurya\\Documents\\exported\\appData.csv", row.names=TRUE)
+# Calculate missing values per column
+missing_values_per_column_2 <- colSums(is.na(appData))
+
+# Create a data frame with column names and missing values
+missing_data_2 <- data.frame(Column = names(missing_values_per_column_2),
+                           MissingValues = missing_values_per_column_2)
+
+ggplot(missing_data_2, aes(x = Column, y = MissingValues)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Column Names", y = "Number of Missing Values 2", 
+       title = "Number of Missing Values in the dataset")
+
+missing_values_per_column <- colSums(is.na(appData))
+print(missing_values_per_column <- colSums(is.na(appData)))
+
+# appData = appData[appData$App_Name != 'nan', ]
+
+# # Calculate missing values per column
+# missing_values_per_column_3 <- colSums(is.na(appData))
+# 
+# # Create a data frame with column names and missing values
+# missing_data_3 <- data.frame(Column = names(missing_values_per_column_3),
+#                            MissingValues = missing_values_per_column_3)
+# 
+# ggplot(missing_data_3, aes(x = Column, y = MissingValues)) +
+#   geom_bar(stat = "identity", fill = "skyblue") +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   labs(x = "Column Names", y = "Number of Missing Values 3",
+#        title = "Number of Missing Values in the dataset")
+```
+### Number of duplicates in the dataset
+
+```{r}
+print(sum(duplicated(appData)))
+```
+
+###Converting object format to time format
+
+```{r}
+appData$Updated <- format(ymd_hms(appData$Updated), "%m-%d-%Y %H:%M:%S")
+appData$Released <- format(ymd_hms(appData$Released), "%m-%d-%Y %H:%M:%S")
+
+print(head(appData,1))
+```
