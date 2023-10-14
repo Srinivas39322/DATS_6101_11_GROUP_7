@@ -1,4 +1,4 @@
--------------------
+---
 title: "DATS-6101"
 author: "GROUP 7"
 date: "2023-10-12"
@@ -12,8 +12,10 @@ output:
   pdf_document:
     toc: yes
     toc_depth: '3'
---------------------
-Our Project uses a Apple Appstore data which has 21 columns. The variables are:
+---
+Our Project uses a Apple Appstore data which has 21 columns.
+
+The variables are:
 App_Id
 App_Name
 AppStore_Url
@@ -39,6 +41,7 @@ Current_Version_Reviews
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ezids)
+library(tidyr)
 ```
 #Reading the Apple App Data CSV into the data frame.
 ```{r}
@@ -61,7 +64,7 @@ tail(appData,5)
 ```{r}
 numerical_cols <- sapply(appData, is.numeric)
 numerical_data <- appData[, numerical_cols]
-numerical_data
+# numerical_data
 ```
 #Check for missing values in the datset
 ```{r}
@@ -70,7 +73,7 @@ numerical_data
 
 #Removing the NA value in the column AppNAme
 ```{r}
-#appData <- subset(appData, !is.na(App_Name))
+appData <- subset(appData, !is.na(App_Name))
 ```
 
 ```{r}
@@ -162,4 +165,59 @@ ggplot(missing_data, aes(x = Column, y = Missing_Values, fill = Column)) +
        y = "Number of Missing Values") +
   theme_minimal()
 
+```
+
+```{r}
+# Dropping Developer_Website column
+appData = subset(appData, select = -c(Developer_Website))
+head(appData, 1)
+```
+
+### Updating Price and Size_Bytes columns' NA values with mean
+
+```{r}
+df_p_sb <- subset(appData, select=c("Price", "Size_Bytes"))
+head(df_p_sb, 1)
+meanvals <- as.list(colMeans(df_p_sb, na.rm = TRUE))
+print(meanvals)
+df_p_sb <- replace_na(df_p_sb, meanvals)
+head(df_p_sb, 1)
+appData = subset(appData, select = -c(Price))
+appData = subset(appData, select = -c(Size_Bytes))
+appData <- cbind(appData, Price = df_p_sb$Price)
+appData <- cbind(appData, Size_Bytes = df_p_sb$Size_Bytes)
+head(appData, 1)
+```
+```{r}
+# write.csv(appData, "C:\\Users\\Krishnasurya\\Documents\\exported\\appData.csv", row.names=TRUE)
+# Calculate missing values per column
+missing_values_per_column_2 <- colSums(is.na(appData))
+
+# Create a data frame with column names and missing values
+missing_data_2 <- data.frame(Column = names(missing_values_per_column_2),
+                           MissingValues = missing_values_per_column_2)
+
+ggplot(missing_data_2, aes(x = Column, y = MissingValues)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Column Names", y = "Number of Missing Values 2", 
+       title = "Number of Missing Values in the dataset")
+
+missing_values_per_column <- colSums(is.na(appData))
+print(missing_values_per_column <- colSums(is.na(appData)))
+
+# appData = appData[appData$App_Name != 'nan', ]
+
+# # Calculate missing values per column
+# missing_values_per_column_3 <- colSums(is.na(appData))
+# 
+# # Create a data frame with column names and missing values
+# missing_data_3 <- data.frame(Column = names(missing_values_per_column_3),
+#                            MissingValues = missing_values_per_column_3)
+# 
+# ggplot(missing_data_3, aes(x = Column, y = MissingValues)) +
+#   geom_bar(stat = "identity", fill = "skyblue") +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   labs(x = "Column Names", y = "Number of Missing Values 3",
+#        title = "Number of Missing Values in the dataset")
 ```
