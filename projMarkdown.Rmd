@@ -43,38 +43,44 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ezids)
 library(tidyr)
 ```
-#Reading the Apple App Data CSV into the data frame.
+
+### Reading the Apple App Data CSV into the data frame
+
 ```{r}
 appData = read.csv('appleAppData.csv')
 ```
-#Dimenstions of the data frame.
+
+### Dimenstions of the data frame
+
 ```{r}
 dim(appData)
 ```
-#Summary of the dataset
+### Summary of the dataset
+
 ```{r}
 summary(appData)
 ```
-#First five and Last five observations of the data frame
+### First five and Last five observations of the data frame
+
 ```{r}
 head(appData,5)
 tail(appData,5)
 ```
-#Listing the numerical variables(columns)
+### Listing the numerical variables(columns)
+
 ```{r}
 numerical_cols <- sapply(appData, is.numeric)
 numerical_data <- appData[, numerical_cols]
 # numerical_data
 ```
-#Check for missing values in the datset
-```{r}
 
-```
+### Removing the NA value in the column AppNAme
 
-#Removing the NA value in the column AppNAme
 ```{r}
 appData <- subset(appData, !is.na(App_Name))
 ```
+
+### Check for missing values in the datset
 
 ```{r}
 missing_values <- sum(is.na(appData))
@@ -101,7 +107,7 @@ blank_values <- sum(is.na(developer_website_column) | developer_website_column =
 cat("Number of blank values in 'Developer_Website':", blank_values, "\n")
 ```
 
-#A single code to check all missing values in our dataset:
+### Checking all missing values in the dataset
 ```{r}
 # Assuming 'appData' is your dataset
 
@@ -124,7 +130,7 @@ cat("Number of missing values in 'Developer_Website' column:", blank_developer_w
 
 ```
 
-#A barplot showing the number of missing values
+### Barplot showing the number of missing values
 ```{r}
 # Load required library
 library(ggplot2)
@@ -166,6 +172,7 @@ ggplot(missing_data, aes(x = Column, y = Missing_Values, fill = Column)) +
   theme_minimal()
 
 ```
+### Dropping Developer_Website column
 
 ```{r}
 # Dropping Developer_Website column
@@ -220,4 +227,9 @@ print(missing_values_per_column <- colSums(is.na(appData)))
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
 #   labs(x = "Column Names", y = "Number of Missing Values 3",
 #        title = "Number of Missing Values in the dataset")
+```
+### Number of duplicates in the dataset
+
+```{r}
+print(sum(duplicated(appData)))
 ```
