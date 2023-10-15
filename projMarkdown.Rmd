@@ -88,25 +88,6 @@ var_df <- data.frame(Numeric = numerical_colnames, Categorical = categorical_col
 print(var_df)
 ```
 
-### Removing the NA value in the column AppNAme
-
-```{r}
-appData <- subset(appData, !is.na(App_Name))
-```
-
-### Check for missing values in the datset
-
-```{r}
-missing_values <- sum(is.na(appData))
-cat("Total missing values in the dataset:", missing_values, "\n")
-missing_values_per_column <- colSums(is.na(appData))
-cat("Missing values per column:\n")
-print(missing_values_per_column)
-```
-
-```{r}
-```
-
 ### Checking all missing values in the dataset
 ```{r}
 na_counts <- sapply(appData, function(col) sum(is.na(col)))
@@ -135,6 +116,10 @@ cat("Number of missing values in 'Developer_Url' column:", blank_developer_url, 
 blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
 cat("Number of missing values in 'Developer_Website' column:", blank_developer_website, "\n")
 
+# Number of missing values in 'Released' column
+Released_column <- sum(is.na(appData$Released) | appData$Released == "")
+cat("Number of missing values in 'Released' column:", Released_column, "\n")
+
 ```
 
 ### Barplot showing the number of missing values
@@ -156,14 +141,15 @@ ggplot(missing_data, aes(x = Column, y = MissingValues)) +
 
 
 ```{r}
-# Calculate the number of missing values in 'Developer_Url' and 'Developer_Website' columns
+# Calculate the number of missing values in 'Developer_Url' ,'Developer_Website' and Released columns
 blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
 blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
+Released <- sum(is.na(appData$Released) | appData$Released == "")
 
 # Create a data frame for plotting
 missing_data <- data.frame(
-  Column = c('Developer_Url', 'Developer_Website'),
-  Missing_Values = c(blank_developer_url, blank_developer_website)
+  Column = c('Developer_Url', 'Developer_Website', 'Released'),
+  Missing_Values = c(blank_developer_url, blank_developer_website, Released)
 )
 
 
@@ -176,12 +162,32 @@ ggplot(missing_data, aes(x = Column, y = Missing_Values, fill = Column)) +
   theme_minimal()
 
 ```
+### Removing the NA value in the column AppNAme
+
+```{r}
+appData <- subset(appData, !is.na(App_Name))
+```
+
 ### Dropping Developer_Website column
 
 ```{r}
 # Dropping Developer_Website column
 appData = subset(appData, select = -c(Developer_Website))
 head(appData, 1)
+```
+
+#Dropping blanks in "Released" column:
+
+```{r}
+# Load the necessary library
+library(dplyr)
+
+# Assuming appData is your data frame
+# Drop rows where 'Released' column is blank
+appData <- appData %>% filter(!is.na(Released) & Released != "")
+
+# Print the updated data frame
+print(tail(appData,4))
 ```
 
 ### Updating Price and Size_Bytes columns' NA values with mean
@@ -237,6 +243,7 @@ print(missing_values_per_column <- colSums(is.na(appData)))
 ```{r}
 print(sum(duplicated(appData)))
 ```
+
 
 ###Converting object format to time format
 
