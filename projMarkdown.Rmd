@@ -330,7 +330,7 @@ summary(aov_result)
 ```
 
 ```{r}
-###Sample 1000 rows from our dataset
+### Sample 1000 rows from our dataset
 sampled_data <- appData %>%
   sample_n(1000)
 # Created custom bins for Average_User_Rating (e.g., every 0.5 units)
@@ -338,7 +338,7 @@ sampled_data$Rating_Group <- cut(sampled_data$Average_User_Rating,
                                  breaks = seq(0, 5, by = 0.5),
                                  labels = seq(0.25, 4.75, by = 0.5))
 
-###Bar plot for grouped Average_User_Rating :
+### Bar plot for grouped Average_User_Rating :
 ggplot(sampled_data, aes(x = Rating_Group)) +
   geom_bar(fill = "skyblue", color = "black") +
   labs(title = "Distribution of Average User Ratings (Sampled Data)",
@@ -353,7 +353,7 @@ sampled_data$Size_Group <- cut(sampled_data$Size_MB,
                                breaks = seq(0, max(sampled_data$Size_MB), by = 50),
                                labels = seq(25, max(sampled_data$Size_MB) - 25, by = 50))
 
-###Bar plot for grouped Size_MB :
+### Bar plot for grouped Size_MB :
 ggplot(sampled_data, aes(x = Size_Group)) +
   geom_bar(fill = "skyblue", color = "black") +
   labs(title = "Distribution of App Sizes (in MB) - Sampled Data",
@@ -361,7 +361,7 @@ ggplot(sampled_data, aes(x = Size_Group)) +
        y = "Frequency") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-###Aggregate data to get average rating for each year :
+### Aggregate data to get average rating for each year :
 sampled_data %>%
   group_by(Year = lubridate::year(Released)) %>%
   summarise(Avg_Rating = mean(Average_User_Rating, na.rm = TRUE)) %>%
@@ -372,7 +372,7 @@ sampled_data %>%
        y = "Average User Rating"
   )
 
-###Aggregate data to get average size for each year :
+### Aggregate data to get average size for each year :
 sampled_data %>%
   group_by(Year = lubridate::year(Released)) %>%
   summarise(Avg_Size_MB = mean(Size_MB, na.rm = TRUE)) %>%
