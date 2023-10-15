@@ -44,6 +44,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ezids)
 library(tidyr)
 library(lubridate)
+library(dplyr)
+library(ggpplot2)
 ```
 
 ### Reading the Apple App Data CSV into the data frame
@@ -137,9 +139,6 @@ cat("Number of missing values in 'Developer_Website' column:", blank_developer_w
 
 ### Barplot showing the number of missing values
 ```{r}
-# Load required library
-library(ggplot2)
-
 # Calculate missing values per column
 missing_values_per_column <- colSums(is.na(appData))
 
@@ -249,10 +248,6 @@ print(head(appData,1))
 ```
 
 ```{r}
-library(lubridate)
-library(dplyr)
-library(ggplot2)
-
 # Sample 1000 rows from our dataset
 sampled_data <- appData %>%
   sample_n(1000)
