@@ -17,27 +17,31 @@ Our Project uses a Apple Appstore data which has 21 columns.
 
 The variables are:
 
-1.  App_Id
-2.  App_Name
-3.  AppStore_Url
-4.  Primary_Genre
-5.  Content_Rating
-6.  Size_Bytes
-7.  Required_IOS_Version
-8.  Released
-9.  Updated
-10. Version
-11. Price
-12. Currency
-13. Free
-14. DeveloperId
-15. Developer
-16. Developer_Url
-17. Developer_Website
-18. Average_User_Rating
-19. Reviews
-20. Current_Version_Score
-21. Current_Version_Reviews
+
+Our Project uses a Apple Appstore data which has 21 columns.
+
+The variables are:
+1.App_Id - Unique identifier for the app
+2.App_Name - Name of the app
+3.AppStore_Url - URL for the app on the Apple App Store
+4.Primary_Genre - Main genre of the app
+5.Content_Rating- Age rating for the app
+6.Size_Bytes- Size of the app in bytes
+7.Required_IOS_Version - Minimum iOS version required to run the app
+8.Released - Release date of the app
+9.Updated - Last update date of the app
+10.Version - Current version of the app
+11.Price - Price of the app
+12.Currency - Currency of the app price
+13.Free - Whether the app is free or not
+14.DeveloperId - Unique identifier for the app's developer
+15.Developer - Name of the app's developer
+16.Developer_Url - URL of the developer on the Apple App Store
+17.Developer_Website - Official website of the developer
+18.Average_User_Rating - Average rating given by users
+19.Reviews - Number of reviews
+20.Current_Version_Score - Rating for the current version of the app
+21.Current_Version_Reviews - Number of reviews for the current version of the app
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -59,6 +63,12 @@ appData = read.csv('appleAppData.csv')
 ```{r}
 dim(appData)
 ```
+###Datatype of columns
+
+```{r}
+str(appData)
+```
+
 ### Summary of the dataset
 
 ```{r}
@@ -403,13 +413,15 @@ plot_data <- data.frame(Year = as.numeric(names(release_counts)),
                         Releases = as.numeric(release_counts),
                         Updates = as.numeric(update_counts))
 
-# Plot line chart
+# Plot line chart with solid line and dots for Releases, and solid line with cross marks for Updates
 ggplot(plot_data, aes(x = Year)) +
-  geom_line(aes(y = Releases, color = "Releases"), linewidth = 1) +
-  geom_line(aes(y = Updates, color = "Updates"), linewidth = 1, linetype = "dashed") +
+  geom_line(aes(y = Releases, color = "Releases"), linetype = "solid", size = 1) +
+  geom_point(aes(y = Releases, color = "Releases"), shape = 16, size = 3) +  # Shape 16 represents dots
+  geom_line(aes(y = Updates, color = "Updates"), linetype = "solid", size = 1) +
+  geom_point(aes(y = Updates, color = "Updates"), shape = 4, size = 3) +  # Shape 4 represents diamond 
   labs(x = "Year", y = "Count", title = "Release and Update Frequency Over Time") +
   scale_color_manual(values = c("Releases" = "blue", "Updates" = "green")) +
-  theme_minimal() + theme(legend.position="top")+
-  theme(legend.position = "top")+scale_x_continuous(breaks = seq(2008, 2022, 1))+
+  theme_minimal() + theme(legend.position="top") +
+  scale_x_continuous(breaks = seq(2008, 2022, 1)) +
   scale_y_continuous(labels = scales::comma)
 ```
