@@ -334,17 +334,30 @@ chisq.test(appData$Content_Rating, appData$Primary_Genre)
 aov_result <- aov(Average_User_Rating ~ Primary_Genre, data=appData)
 summary(aov_result)
 ```
-
+### Sample 1000 rows from our dataset :
 ```{r}
-### Sample 1000 rows from our dataset
 sampled_data <- appData %>%
   sample_n(1000)
 # Created custom bins for Average_User_Rating (e.g., every 0.5 units)
 sampled_data$Rating_Group <- cut(sampled_data$Average_User_Rating, 
                                  breaks = seq(0, 5, by = 0.5),
                                  labels = seq(0.25, 4.75, by = 0.5))
-
+# Load the required libraries
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+```
+# Assuming "Released" is in "MM/DD/YYYY" format
+```{r}
+# Display a sample of the "Released" column
+head(appData$Released, 10)
+# Convert "Released" to a standard date format
+appData$Released <- as.Date(appData$Released, format = "%m/%d/%Y")
+# Display a sample of the "Released" column after conversion
+head(appData$Released, 10)
+```
 ### Bar plot for grouped Average_User_Rating :
+```{r}
 ggplot(sampled_data, aes(x = Rating_Group)) +
   geom_bar(fill = "skyblue", color = "black") +
   labs(title = "Distribution of Average User Ratings (Sampled Data)",
@@ -358,37 +371,71 @@ sampled_data$Size_MB <- sampled_data$Size_Bytes / (1024^2)
 sampled_data$Size_Group <- cut(sampled_data$Size_MB, 
                                breaks = seq(0, max(sampled_data$Size_MB), by = 50),
                                labels = seq(25, max(sampled_data$Size_MB) - 25, by = 50))
-
+```
 ### Bar plot for grouped Size_MB :
+```{r}
 ggplot(sampled_data, aes(x = Size_Group)) +
   geom_bar(fill = "skyblue", color = "black") +
   labs(title = "Distribution of App Sizes (in MB) - Sampled Data",
        x = "Size (MB)",
        y = "Frequency") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-### Aggregate data to get average rating for each year :
-sampled_data %>%
-  group_by(Year = lubridate::year(Released)) %>%
-  summarise(Avg_Rating = mean(Average_User_Rating, na.rm = TRUE)) %>%
-  ggplot(aes(x = factor(Year), y = Avg_Rating)) +
-  geom_bar(stat = "identity", fill = "skyblue", color = "black") +
-  labs(title = "Average User Rating Trends Over Time (Sampled Data)",
-       x = "Year",
-       y = "Average User Rating"
-  )
-
-### Aggregate data to get average size for each year :
-sampled_data %>%
-  group_by(Year = lubridate::year(Released)) %>%
-  summarise(Avg_Size_MB = mean(Size_MB, na.rm = TRUE)) %>%
-  ggplot(aes(x = factor(Year), y = Avg_Size_MB)) +
-  geom_bar(stat = "identity", fill = "skyblue", color = "black") +
-  labs(title = "App Size Trends Over Time (Sampled Data)",
-       x = "Year",
-       y = "Average Size (MB)"
-  )
 ```
+# Create a bar plot for Price
+```{r}
+ggplot(sampled_data, aes(x = factor(Price))) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of App Prices (Sampled Data)",
+       x = "Price",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)
+)
+```
+### Aggregate data to get average price for each year
+```{r}
+# Convert 'Released' and 'Updated' columns to datetime objects
+appData$Released <- as.POSIXct(strptime(appData$Released, "%m-%d-%Y %H:%M:%S"))
+appData$Updated <- as.POSIXct(strptime(appData$Updated, "%m-%d-%Y %H:%M:%S"))
+
+# Extract release and update years
+appData$Release_Year <- year(appData$Released)
+appData$Update_Year <- year(appData$Updated)
+
+# App price over a period of time
+ggplot(appData, aes(x = Release_Year, y = Price, color = Primary_Genre)) +
+  geom_point(data = na.omit(appData), alpha = 0.5) +
+  labs(title = "App Price Trends Over Time", x = "Year of Release", y = "App Price (USD)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_discrete(name = "Primary Genre") +
+  scale_y_continuous(labels = scales::comma)
+```
+### Aggregate data to get average size for each year :
+```{r}
+# App size (in MB) over time
+appData$Size_MB <- appData$Size_Bytes / (1024^2)
+# App size (in MB) over time
+appData$Size_MB <- appData$Size_Bytes / (1024^2)  # Create the Size_MB variable
+ggplot(appData, aes(x = Release_Year, y = Size_MB, color = Primary_Genre)) +
+  geom_point(data = na.omit(appData), alpha = 0.5) +
+  labs(title = "App Size Trends Over Time", x = "Year of Release", y = "App Size (MB)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_discrete(name = "Primary Genre") +
+  scale_y_continuous(labels = scales::comma)
+```
+### Aggregate data to get average rating for each year :
+```{r}
+# App average user ratings over time
+ggplot(appData, aes(x = Release_Year, y = Average_User_Rating, color = Primary_Genre)) +
+  geom_point(data = na.omit(appData), alpha = 0.5) +
+  labs(title = "Average User Ratings Trends Over Time", x = "Year of Release", y = "Average User Rating") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_discrete(name = "Primary Genre") +
+  scale_y_continuous(labels = scales::comma)
+```
+
 ## Plot showing Release and Update Frequency Over Time
 ```{r}
 
