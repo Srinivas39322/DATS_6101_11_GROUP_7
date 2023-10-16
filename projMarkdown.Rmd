@@ -468,3 +468,35 @@ ggplot(plot_data, aes(x = Year)) +
   scale_x_continuous(breaks = seq(2008, 2022, 1)) +
   scale_y_continuous(labels = scales::comma)
 ```
+### Bar graph No. of Apps Vs. Content Rating
+```{r}
+#library(dplyr)
+# Arrange data by the count of 'Content_Rating' in descending order
+ordered_ratings <- appData %>% 
+  group_by(Content_Rating) %>% 
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  .$Content_Rating
+
+# Create the bar plot
+ggplot(appData, aes(x = Content_Rating)) +
+  geom_bar(aes(fill = Content_Rating), show.legend = FALSE) +
+  scale_x_discrete(limits = ordered_ratings) +  # Order bars
+  labs(title = "Number of Apps by Content Rating", x = "Content Rating", y = "Number of Apps")
+```
+### Pie cart for No. of Apps per Content Rating
+```{r}
+# Calculate the count of apps by Content Rating
+rating_counts <- table(appData$Content_Rating)
+
+# Create a data frame for the pie chart
+rating_data <- data.frame(Content_Rating = names(rating_counts), Count = as.numeric(rating_counts))
+
+# Create a pie chart for Content Rating
+ggplot(rating_data, aes(x = "", y = Count, fill = Content_Rating)) +
+  geom_bar(stat = "identity") +
+    coord_polar("y") +
+      ggtitle('Distribution of Apps by Content Rating') +
+        theme_void() +
+          theme(legend.position = "bottom")  # Optional: move the legend to the bottom
+```
