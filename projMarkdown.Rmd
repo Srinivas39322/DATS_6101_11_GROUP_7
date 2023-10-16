@@ -63,7 +63,7 @@ appData = read.csv('appleAppData.csv')
 ```{r}
 dim(appData)
 ```
-###Datatype of columns
+### Datatype of columns
 
 ```{r}
 str(appData)
@@ -194,13 +194,9 @@ appData = subset(appData, select = -c(Developer_Website))
 head(appData, 1)
 ```
 
-#Dropping blanks in "Released" column:
+# Dropping blanks in "Released" column:
 
 ```{r}
-# Load the necessary library
-library(dplyr)
-
-# Assuming appData is your data frame
 # Drop rows where 'Released' column is blank
 appData <- appData %>% filter(!is.na(Released) & Released != "")
 
