@@ -14,12 +14,6 @@ output:
     #toc_depth: '3'
 ---
 Our Project uses a Apple Appstore data which has 21 columns.
-
-The variables are:
-
-
-Our Project uses a Apple Appstore data which has 21 columns.
-
 The variables are:
 1.App_Id - Unique identifier for the app
 2.App_Name - Name of the app
@@ -98,14 +92,6 @@ var_df <- data.frame(Numeric = numerical_colnames, Categorical = categorical_col
 print(var_df)
 ```
 
-```{r}
-missing_values <- sum(is.na(appData))
-cat("Total missing values in the dataset:", missing_values, "\n")
-missing_values_per_column <- colSums(is.na(appData))
-cat("Missing values per column:\n")
-print(missing_values_per_column)
-```
-
 ### Checking all missing values in the dataset
 ```{r}
 na_counts <- sapply(appData, function(col) sum(is.na(col)))
@@ -114,30 +100,6 @@ blank_counts <- sapply(appData, function(col) sum(col == "" | col == " "))
 
 result <- data.frame(Column = names(appData), NA_Count = na_counts, Blank_Count = blank_counts)
 print(result)
-```
-
-```{r}
-# Total missing values in the dataset
-missing_values <- sum(is.na(appData))
-cat("Total missing values in the dataset:", missing_values, "\n")
-
-# Missing values per column
-missing_values_per_column <- colSums(is.na(appData))
-cat("Missing values per column:\n")
-print(missing_values_per_column)
-
-# Number of missing values in 'Developer_Url' column
-blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
-cat("Number of missing values in 'Developer_Url' column:", blank_developer_url, "\n")
-
-# Number of missing values in 'Developer_Website' column
-blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
-cat("Number of missing values in 'Developer_Website' column:", blank_developer_website, "\n")
-
-# Number of missing values in 'Released' column
-Released_column <- sum(is.na(appData$Released) | appData$Released == "")
-cat("Number of missing values in 'Released' column:", Released_column, "\n")
-
 ```
 
 ### Barplot showing the number of missing values
@@ -150,14 +112,14 @@ missing_data <- data.frame(Column = names(missing_values_per_column),
                            MissingValues = missing_values_per_column)
 
 ggplot(missing_data, aes(x = Column, y = MissingValues)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_bar(stat = "identity", fill = "red") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Column Names", y = "Number of Missing Values", 
        title = "Number of Missing Values in the dataset")
 
 ```
 
-
+### Barplot showing the number of missing values in columns'Developer_Url' ,'Developer_Website' and Released columns
 ```{r}
 # Calculate the number of missing values in 'Developer_Url' ,'Developer_Website' and Released columns
 blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
@@ -186,25 +148,21 @@ ggplot(missing_data, aes(x = Column, y = Missing_Values, fill = Column)) +
 appData <- subset(appData, !is.na(App_Name))
 ```
 
-### Dropping Developer_Website column
+### Dropping the Developer_Website column
 
 ```{r}
-# Dropping Developer_Website column
 appData = subset(appData, select = -c(Developer_Website))
 head(appData, 1)
 ```
 
-# Dropping blanks in "Released" column:
+# Dropping blanks in the column "Released" 
 
 ```{r}
-# Drop rows where 'Released' column is blank
 appData <- appData %>% filter(!is.na(Released) & Released != "")
-
-# Print the updated data frame
 print(tail(appData,4))
 ```
 
-### Updating Price and Size_Bytes columns' NA values with mean
+### Updating Price and Size_Bytes column's NA values with mean
 
 ```{r}
 df_p_sb <- subset(appData, select=c("Price", "Size_Bytes"))
@@ -219,8 +177,8 @@ appData <- cbind(appData, Price = df_p_sb$Price)
 appData <- cbind(appData, Size_Bytes = df_p_sb$Size_Bytes)
 head(appData, 1)
 ```
+
 ```{r}
-# write.csv(appData, "C:\\Users\\Krishnasurya\\Documents\\exported\\appData.csv", row.names=TRUE)
 # Calculate missing values per column
 missing_values_per_column_2 <- colSums(is.na(appData))
 
@@ -236,21 +194,6 @@ ggplot(missing_data_2, aes(x = Column, y = MissingValues)) +
 
 missing_values_per_column <- colSums(is.na(appData))
 print(missing_values_per_column <- colSums(is.na(appData)))
-
-# appData = appData[appData$App_Name != 'nan', ]
-
-# # Calculate missing values per column
-# missing_values_per_column_3 <- colSums(is.na(appData))
-# 
-# # Create a data frame with column names and missing values
-# missing_data_3 <- data.frame(Column = names(missing_values_per_column_3),
-#                            MissingValues = missing_values_per_column_3)
-# 
-# ggplot(missing_data_3, aes(x = Column, y = MissingValues)) +
-#   geom_bar(stat = "identity", fill = "skyblue") +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-#   labs(x = "Column Names", y = "Number of Missing Values 3",
-#        title = "Number of Missing Values in the dataset")
 ```
 ### Number of duplicates in the dataset
 
@@ -263,7 +206,6 @@ print(sum(duplicated(appData)))
 ```{r}
 appData$Updated <- format(ymd_hms(appData$Updated), "%m-%d-%Y %H:%M:%S")
 appData$Released <- format(ymd_hms(appData$Released), "%m-%d-%Y %H:%M:%S")
-
 print(head(appData,1))
 ```
 
