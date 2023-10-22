@@ -418,3 +418,87 @@ chi_square_result <- chisq.test(contingency_table)
 # View the test result
 print(chi_square_result)
 ```
+
+## Analysis of Price
+**Sampling 1000 rows from the dataset**
+```{r}
+sampled_data <- appData %>%
+  sample_n(1000)
+# Created custom bins for Average_User_Rating (e.g., every 0.5 units)
+sampled_data$Rating_Group <- cut(sampled_data$Average_User_Rating, 
+                                 breaks = seq(0, 5, by = 0.5),
+                                 labels = seq(0.25, 4.75, by = 0.5))
+
+```
+### Frequency
+**Frequency of 'Price' for sampled data**
+```{r price_freq_barplot_9}
+ggplot(sampled_data, aes(x = factor(Price))) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of App Prices (Sampled Data)",
+       x = "Price",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)
+)
+```
+
+### Distribution
+**Distribution of Free and Paid apps**
+```{r free_vs_paid_apps_barplot_spbarplot_10_11_12}
+fp <- subset(appData, select = c('Primary_Genre', 'Free'))
+fp_agg <- fp %>%  
+             group_by(Primary_Genre, Free) %>% 
+            summarise(total_count = n(), .groups = 'drop') %>% 
+            pivot_wider(names_from = Free, values_from = total_count, values_fill = 0)
+# fp_agg
+colnames(fp_agg) <- c("Primary_Genre", "Paid", "Free")
+# fp_agg
+
+sum_of_paid <- sum(fp_agg$Paid)
+sum_of_free <- sum(fp_agg$Free)
+total_apps <- sum_of_paid + sum_of_free
+
+# Sample data
+free_paid <- data.frame(
+  Category = c("Paid", "Free"),
+  Value = c(round((sum_of_paid/total_apps)*100, 2), round((sum_of_free/total_apps)*100,2)))
+
+# free_paid
+custom_colorss <- c("yellowgreen", "chocolate2")
+
+# Create a pie chart
+p <- ggplot(free_paid, aes(x = "", y = Value, fill = Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Pie Chart for Free & Paid") +
+  scale_fill_manual(values = custom_colorss) +
+geom_text(aes(label = Value), position = position_stack(vjust = 0.5))
+p
+
+# Reshape the data to long format
+fp_agg_long <- fp_agg %>%
+  gather(Type, Count, -Primary_Genre)
+
+ggplot(fp_agg_long, aes(x = Primary_Genre, y = Count, fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8)) +
+  labs(title = "Distribution of 'Free & Paid' apps across 'Genre'", caption = 'Grouped Bar Chart', x = "Primary Genre", y = "No. of. apps") +
+  scale_fill_manual(values = c("Paid" = "chocolate2", "Free" = "yellowgreen")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Calculate percentages within each Primary_Genre
+fp_agg_longg <- fp_agg_long %>%
+  group_by(Primary_Genre) %>%
+  mutate(Percentage = (Count / sum(Count)) * 100)
+
+# fp_agg_longg
+
+# Create a stacked percentage bar chart with Primary_Genre on the x-axis
+ggplot(fp_agg_longg, aes(x = Primary_Genre, y = Percentage, fill = Type)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Percentage Distribution of 'Free & Paid' apps across 'Genre'", caption = 'Stacked Percentage Bar Chart', x = "Primary Genre", y = "Free & Paid apps %") +
+  scale_fill_manual(values = c("Paid" = "chocolate2", "Free" = "yellowgreen")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
