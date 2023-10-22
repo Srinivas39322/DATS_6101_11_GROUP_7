@@ -1,5 +1,5 @@
 ---
-title: "DATS-6101"
+title: "DATS-6101 Project"
 author: "GROUP 7"
 date: "2023-10-12"
 output: 
@@ -13,8 +13,8 @@ output:
    # toc: yes
     #toc_depth: '3'
 ---
-Our Project uses a Apple Appstore data which has 21 columns.
-The variables are:
+Our Project uses a Apple Appstore data which has 21 columns. The variables are:
+
 1.App_Id - Unique identifier for the app
 2.App_Name - Name of the app
 3.AppStore_Url - URL for the app on the Apple App Store
@@ -44,39 +44,37 @@ library(tidyr)
 library(lubridate)
 library(dplyr)
 library(ggplot2)
+library(gridExtra)
 ```
 
-### Reading the Apple App Data CSV into the data frame
-
-```{r}
+### Reading the AppleStore data into dataframe
+```{r read_csv}
 appData = read.csv('appleAppData.csv')
 ```
 
-### Dimenstions of the data frame
-
-```{r}
+### Dimenstions of the dataframe
+```{r dataset_dimension}
 dim(appData)
 ```
-### Datatype of columns
 
-```{r}
+### Datatype of columns
+```{r dataset_structure}
 str(appData)
 ```
 
 ### Summary of the dataset
-
-```{r}
+```{r dataset_summary}
 summary(appData)
 ```
-### First five and Last five observations of the data frame
 
-```{r}
+### First and Last few observations of the dataframe
+```{r dataset_rows}
 head(appData,2)
 tail(appData,2)
 ```
-### Listing the numerical and categorical variables(columns)
 
-```{r}
+### Listing the numerical and categorical variables(columns)
+```{r numerical_and_categorial_cols}
 numerical_cols <- sapply(appData, is.numeric)
 numerical_colnames <- names(appData)[numerical_cols]
 
@@ -92,8 +90,9 @@ var_df <- data.frame(Numeric = numerical_colnames, Categorical = categorical_col
 print(var_df)
 ```
 
+## Missing values
 ### Checking all missing values in the dataset
-```{r}
+```{r check_missing_values}
 na_counts <- sapply(appData, function(col) sum(is.na(col)))
 
 blank_counts <- sapply(appData, function(col) sum(col == "" | col == " "))
@@ -102,8 +101,9 @@ result <- data.frame(Column = names(appData), NA_Count = na_counts, Blank_Count 
 print(result)
 ```
 
-### Barplot showing the number of missing values
-```{r}
+### Numerical column NAs
+**Barplot showing the number of missing values in columns 'Price' and 'Size_Bytes' columns**
+```{r numerical_missing_values_barplot}
 # Calculate missing values per column
 missing_values_per_column <- colSums(is.na(appData))
 
@@ -119,14 +119,19 @@ ggplot(missing_data, aes(x = Column, y = MissingValues)) +
 
 ```
 
-### Barplot showing the number of missing values in columns'Developer_Url' ,'Developer_Website' and Released columns
-```{r}
-library(ggplot2)
-library(gridExtra)
+### Categorical column NAs
+**Barplot showing the number of missing values in columns 'Developer_Url', 'Developer_Website' and 'Released' columns**
+```{r categorical_missing_values_barplot}
 
 # Subset data
+missing_data <- data.frame(
+  Column = c('Developer_Url', 'Developer_Website', 'Released'),
+  Missing_Values = c(blank_developer_url, blank_developer_website, Released)
+)
+
 developer_website_data <- subset(missing_data, Column == "Developer_Website")
 other_data <- subset(missing_data, Column != "Developer_Website")
+custom_colors <- c("Developer_Url" = "indianred4", "Developer_Website" = "indianred3", "Released"="indianred2")
 
 # Plot for Developer_Website
 plot1 <- ggplot(developer_website_data, aes(x = Column, y = Missing_Values)) +
@@ -153,29 +158,27 @@ plot2 <- ggplot(other_data, aes(x = Column, y = Missing_Values)) +
 grid.arrange(plot1, plot2, ncol = 2)
 
 ```
-### Removing the NA value in the column AppNAme
 
-```{r}
+## Handling missing values
+**Removing row with NA value in AppName column**
+```{r remove_na_in_appname}
 appData <- subset(appData, !is.na(App_Name))
 ```
 
-### Dropping the Developer_Website column
-
-```{r}
+**Dropping 'Developer_Website' column as it is not used in the analysis and has missing values for over half the dataset**
+```{r drop_dw_col}
 appData = subset(appData, select = -c(Developer_Website))
 head(appData, 1)
 ```
 
-# Dropping blanks in the column "Released" 
-
-```{r}
+**Dropping blanks in 'Released' column**
+```{r drop_blanks_in_released_col}
 appData <- appData %>% filter(!is.na(Released) & Released != "")
 print(tail(appData,4))
 ```
 
-### Updating Price and Size_Bytes column's NA values with mean
-
-```{r}
+**Updating NA values in numerical columns 'Price' and 'Size_Bytes' with their respective means**
+```{r replace_numerical_na_with_means}
 df_p_sb <- subset(appData, select=c("Price", "Size_Bytes"))
 head(df_p_sb, 1)
 meanvals <- as.list(colMeans(df_p_sb, na.rm = TRUE))
@@ -189,7 +192,8 @@ appData <- cbind(appData, Size_Bytes = df_p_sb$Size_Bytes)
 head(appData, 1)
 ```
 
-```{r}
+**Final checking for missing values**
+```{r final_check_for_missing_vals_barplot}
 # Calculate missing values per column
 missing_values_per_column_2 <- colSums(is.na(appData))
 
@@ -206,22 +210,26 @@ ggplot(missing_data_2, aes(x = Column, y = MissingValues)) +
 missing_values_per_column <- colSums(is.na(appData))
 print(missing_values_per_column <- colSums(is.na(appData)))
 ```
-### Number of duplicates in the dataset
 
-```{r}
+**Checking for duplicates**
+```{r check_duplicated}
 print(sum(duplicated(appData)))
 ```
 
-###Converting object format to time format
-
-```{r}
+## Datetime columns
+**Converting 'Released' and 'Updated' columns datatype from object to time format**
+```{r dt_cols_format}
 appData$Updated <- format(ymd_hms(appData$Updated), "%m-%d-%Y %H:%M:%S")
 appData$Released <- format(ymd_hms(appData$Released), "%m-%d-%Y %H:%M:%S")
+
+appData$Released <- as.POSIXct(strptime(appData$Released, "%m-%d-%Y %H:%M:%S"))
+appData$Updated <- as.POSIXct(strptime(appData$Updated, "%m-%d-%Y %H:%M:%S"))
+
 print(head(appData,1))
 ```
 
-###Number of Apps per Genre
-```{r}
+## Apps vs Genre
+```{r apps_per_genre_barplot_1}
 genre_counts <- appData %>%
   group_by(Primary_Genre) %>%
   summarise(App_Count = n())
@@ -234,27 +242,28 @@ ggplot(genre_counts, aes(x = Primary_Genre, y = App_Count)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-###Repesenatation of Revenue generated by Genre
-```{r}
+## Revenue vs Genre
+```{r revenue_by_genre_barplot_2}
 appData$Revenue <- appData$Price * appData$Reviews
 
-library(dplyr)
-library(gridExtra)
 revenue_by_genre <- appData %>%
 group_by(Primary_Genre) %>%
 summarise(Total_Revenue = sum(Revenue))
 
-
-library(ggplot2)
 ggplot(revenue_by_genre, aes(x = reorder(Primary_Genre, -Total_Revenue), y = Total_Revenue)) +
   geom_bar(stat='identity', fill='seagreen4') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Revenue by Genre", x = "Genre", y = "Total Revenue")+
   scale_y_continuous(labels = scales::comma)
-
 ```
-###Number of Games Released over years
-```{r}
+
+## Gaming apps
+### Frequency over years
+```{r gaming_apps_count_over_years_barplot_3}
+# Extract release and update years
+appData$Release_Year <- year(appData$Released)
+appData$Update_Year <- year(appData$Updated)
+
 # Count the number of games per release year
 games_per_year <- appData %>% 
   group_by(Release_Year) %>%
@@ -267,8 +276,8 @@ ggplot(games_per_year, aes(x = Release_Year, y = n)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-###Distribution of Reviews and Rating Over Years
-```{r}
+### Reviews & Rating vs Year
+```{r gaming_apps_reviews_and_ratings_over_years_barplot_4}
 games_data <- appData[appData$Primary_Genre == 'Games', ]
 games_data$Year <- year(as.Date(games_data$Released, format="%d-%m-%Y %H:%M:%S"))
 
@@ -290,131 +299,8 @@ ggplot(games_by_year, aes(x = as.factor(Year))) +
 
 ```
 
-### The function computes the correlation coefficient for pairs of numeric columns
-```{r}
-cor(appData[, sapply(appData, is.numeric)])
-```
-### Pearson's Chi-squared test for Content_Rating vs. Primary_Genre
-```{r}
-chisq.test(appData$Content_Rating, appData$Primary_Genre)
-```
-### ANOVA test for Primary_Genre vs. Average_User_Rating
-```{r}
-aov_result <- aov(Average_User_Rating ~ Primary_Genre, data=appData)
-summary(aov_result)
-```
-### Sample 1000 rows from our dataset :
-```{r}
-sampled_data <- appData %>%
-  sample_n(1000)
-# Created custom bins for Average_User_Rating (e.g., every 0.5 units)
-sampled_data$Rating_Group <- cut(sampled_data$Average_User_Rating, 
-                                 breaks = seq(0, 5, by = 0.5),
-                                 labels = seq(0.25, 4.75, by = 0.5))
-# Load the required libraries
-library(lubridate)
-library(dplyr)
-library(ggplot2)
-```
-# Assuming "Released" is in "MM/DD/YYYY" format
-```{r}
-# Display a sample of the "Released" column
-head(appData$Released, 10)
-# Convert "Released" to a standard date format
-appData$Released <- as.Date(appData$Released, format = "%m/%d/%Y")
-# Display a sample of the "Released" column after conversion
-head(appData$Released, 10)
-```
-### Bar plot for grouped Average_User_Rating :
-```{r}
-ggplot(sampled_data, aes(x = Rating_Group)) +
-  geom_bar(fill = "skyblue", color = "black") +
-  labs(title = "Distribution of Average User Ratings (Sampled Data)",
-       x = "Average User Rating",
-       y = "Frequency") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
-sampled_data$Size_MB <- sampled_data$Size_Bytes / (1024^2)
-
-sampled_data$Size_Group <- cut(sampled_data$Size_MB, 
-                               breaks = seq(0, max(sampled_data$Size_MB), by = 50),
-                               labels = seq(25, max(sampled_data$Size_MB) - 25, by = 50))
-```
-### Bar plot for grouped Size_MB :
-```{r}
-ggplot(sampled_data, aes(x = Size_Group)) +
-  geom_bar(fill = "skyblue", color = "black") +
-  labs(title = "Distribution of App Sizes (in MB) - Sampled Data",
-       x = "Size (MB)",
-       y = "Frequency") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-# Create a bar plot for Price
-```{r}
-ggplot(sampled_data, aes(x = factor(Price))) +
-  geom_bar(fill = "skyblue", color = "black") +
-  labs(title = "Distribution of App Prices (Sampled Data)",
-       x = "Price",
-       y = "Frequency") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)
-)
-```
-### Aggregate data to get average price for each year
-```{r}
-# Convert 'Released' and 'Updated' columns to datetime objects
-appData$Released <- as.POSIXct(strptime(appData$Released, "%m-%d-%Y %H:%M:%S"))
-appData$Updated <- as.POSIXct(strptime(appData$Updated, "%m-%d-%Y %H:%M:%S"))
-
-# Extract release and update years
-appData$Release_Year <- year(appData$Released)
-appData$Update_Year <- year(appData$Updated)
-
-# App price over a period of time
-ggplot(appData, aes(x = Release_Year, y = Price, color = Primary_Genre)) +
-  geom_point(data = na.omit(appData), alpha = 0.5) +
-  labs(title = "App Price Trends Over Time", x = "Year of Release", y = "App Price (USD)") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_discrete(name = "Primary Genre") +
-  scale_y_continuous(labels = scales::comma)
-```
-### Aggregate data to get average size for each year :
-```{r}
-# App size (in MB) over time
-appData$Size_MB <- appData$Size_Bytes / (1024^2)
-# App size (in MB) over time
-appData$Size_MB <- appData$Size_Bytes / (1024^2)  # Create the Size_MB variable
-ggplot(appData, aes(x = Release_Year, y = Size_MB, color = Primary_Genre)) +
-  geom_point(data = na.omit(appData), alpha = 0.5) +
-  labs(title = "App Size Trends Over Time", x = "Year of Release", y = "App Size (MB)") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_discrete(name = "Primary Genre") +
-  scale_y_continuous(labels = scales::comma)
-```
-### Aggregate data to get average rating for each year :
-```{r}
-# App average user ratings over time
-ggplot(appData, aes(x = Release_Year, y = Average_User_Rating, color = Primary_Genre)) +
-  geom_point(data = na.omit(appData), alpha = 0.5) +
-  labs(title = "Average User Ratings Trends Over Time", x = "Year of Release", y = "Average User Rating") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_discrete(name = "Primary Genre") +
-  scale_y_continuous(labels = scales::comma)
-```
-
-## Plot showing Release and Update Frequency Over Time
-```{r}
-
-# Convert 'Released' and 'Updated' columns to datetime objects
-appData$Released <- as.POSIXct(strptime(appData$Released, "%m-%d-%Y %H:%M:%S"))
-appData$Updated <- as.POSIXct(strptime(appData$Updated, "%m-%d-%Y %H:%M:%S"))
-
-# Extract release and update years
-appData$Release_Year <- year(appData$Released)
-appData$Update_Year <- year(appData$Updated)
+## Release and Update Frequency over the years
+```{r release_and_update_frequency_over_years_linechart_5}
 
 # Calculate the number of releases and updates per year
 release_counts <- table(appData$Release_Year)
@@ -438,3 +324,97 @@ ggplot(plot_data, aes(x = Year)) +
   scale_y_continuous(labels = scales::comma)
 ```
 
+
+## Content Rating
+#### Frequency
+```{r apps_by_contentrating_barplot_6}
+
+# Arrange data by the count of 'Content_Rating' in descending order
+ordered_ratings <- appData %>% 
+  group_by(Content_Rating) %>% 
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  .$Content_Rating
+
+# Create the bar plot
+ggplot(appData, aes(x = Content_Rating)) +
+  geom_bar(aes(fill = Content_Rating), show.legend = FALSE) +
+  scale_x_discrete(limits = ordered_ratings) +  # Order bars
+  labs(title = "Number of Apps by Content Rating", x = "Content Rating", y = "Number of Apps")
+```
+
+### Distribution
+```{r apps_by_contentrating_piechart_7}
+# Calculate the count of apps by Content Rating
+rating_counts <- table(appData$Content_Rating)
+
+# Create a data frame for the pie chart
+rating_data <- data.frame(Content_Rating = names(rating_counts), Count = as.numeric(rating_counts))
+
+# Define the desired order for sorting the "Name" column
+desired_order <- c("4+", "9+", "12+", "17+", "Not yet rated")
+
+# Sort the data frame based on the "Name" column using the desired order
+rating_data <- rating_data %>%
+  arrange(factor(Content_Rating, levels = desired_order))
+
+# Calculate percentages
+rating_data$Percentage <- (rating_data$Count / sum(rating_data$Count)) * 100
+rating_data$Percentage <- round(rating_data$Percentage, 2)
+
+rating_data
+
+custom_colors <- c("#f8766d", "#a3a500", "#00bf7d", "#00b0f6", "slategrey")
+# Create a pie chart-like plot
+ggplot(rating_data, aes(x = 1, y = Percentage, fill = Content_Rating)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Pie Chart: Content Rating", fill = "Content Rating") +
+  scale_fill_manual(values = custom_colors) +
+  theme_void() +
+  theme(legend.position = "right")
+```
+
+### Genre vs. Content Rating
+```{r genre_vs_contentrating_spbarplot_8}
+pg_cr <- subset(appData, select = c('Primary_Genre', 'Content_Rating'))
+pg_cr_agg <- pg_cr %>%  
+             group_by(Primary_Genre, Content_Rating) %>% 
+            summarise(total_count = n(), .groups = 'drop') %>% 
+            pivot_wider(names_from = Content_Rating, values_from = total_count, values_fill = 0)
+print(pg_cr_agg)
+col_order <- c("Primary_Genre", "4+", "9+", "12+", "17+", "Not yet rated")
+pg_cr_agg <- pg_cr_agg[, col_order]
+pg_cr_agg
+
+
+pgcr_data_long <- pg_cr_agg %>%
+  gather(Rating, Count, -Primary_Genre)
+
+# Calculate percentages within each Primary_Genre
+pgcr_data_longg <- pgcr_data_long %>%
+  group_by(Primary_Genre) %>%
+  mutate(Percentage = (Count / sum(Count)) * 100)
+
+# Create a stacked percentage bar chart with Primary_Genre on the x-axis
+ggplot(pgcr_data_longg, aes(x = Primary_Genre, y = Percentage, fill = Rating)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Percentage Distribution of 'Content Rating' across 'Genre'", caption = 'Stacked Percentage Bar Chart', x = "Primary Genre", y = "Content Rating %") +
+  scale_fill_manual(values = c("4+" = "gold", "9+" = "darkorange", "12+" = "brown2", "17+" = "firebrick3", "Not yet rated" = "red4")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+### Pearson's Chi-squared test
+**Pearson's Chi-squared test between Genre and Content_Rating**
+```{r chisq_test_genre_vs_contentrating}
+# Create a contingency table
+contingency_table <- table(appData$Primary_Genre, appData$Content_Rating)
+
+# Perform the chi-squared test
+chi_square_result <- chisq.test(contingency_table)
+
+# View the test result
+print(chi_square_result)
+```
