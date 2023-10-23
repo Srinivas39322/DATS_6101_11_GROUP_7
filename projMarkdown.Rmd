@@ -502,3 +502,127 @@ ggplot(fp_agg_longg, aes(x = Primary_Genre, y = Percentage, fill = Type)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_y_continuous(labels = scales::percent_format(scale = 1))
 ```
+## Analysis of Ratings
+### Frequency
+** Frequency of 'Average_User_Rating' for sampled data**
+```{r rating_freq_barplot_13}
+### Bar plot for grouped Average_User_Rating :
+ggplot(sampled_data, aes(x = Rating_Group)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Average User Ratings (Sampled Data)",
+       x = "Average User Rating",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+**Creating User_Rating_Type column for various ranges of the ratings**
+```{r create_user_rating_type_col}
+appData$User_Rating_Type <- with(appData, ifelse(Average_User_Rating > 4, 'Rating 4 to 5',
+                                          ifelse(Average_User_Rating > 3, 'Rating 3 to 4',
+                                          ifelse(Average_User_Rating > 2, 'Rating 2 to 3',
+                                          ifelse(Average_User_Rating > 1, 'Rating 1 to 2',
+                                          ifelse(Average_User_Rating > 0, 'Rating 0 to 1', 'No rating'))))))
+# head(appData, 10)
+```
+
+### Distribution
+**Distribution of Rating types across Genre**
+```{r genre_vs_user_rating_type_spbarplot_14}
+genre_user_rating_type = subset(appData, select = c("Primary_Genre", "User_Rating_Type"))
+agg_table_2 <- genre_user_rating_type %>%  
+             group_by(Primary_Genre, User_Rating_Type) %>% 
+            summarise(total_count = n(), .groups = 'drop') %>% 
+            pivot_wider(names_from = User_Rating_Type, values_from = total_count, values_fill = 0)
+# print(agg_table_2)
+
+# Reshape the data to long format
+data_long <- agg_table_2 %>%
+  gather(Rating, Count, -Primary_Genre)
+# print(data_long)
+
+data_longg <- data_long %>%
+  group_by(Primary_Genre) %>%
+  mutate(Percentage = (Count / sum(Count)) * 100)
+
+# data_longg
+
+# Create a stacked percentage bar chart with Primary_Genre on the x-axis
+ggplot(data_longg, aes(x = Primary_Genre, y = Percentage, fill = Rating)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Percentage Distribution of 'Rating Types' across 'Genre'", caption = 'Stacked Percentage Bar Chart', x = "Primary Genre", y = "Rating Types %") +
+  scale_fill_manual(values = c("No rating" = "red", "Rating 0 to 1" = "yellow", "Rating 1 to 2" = "orange", "Rating 2 to 3" = "green",
+                                "Rating 3 to 4" = "blue", "Rating 4 to 5" = "purple")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+### Most and least rated
+```{r most_and_least_rated_apps_barplot_15_16}
+appData$User_Rating <- with(appData, ifelse(Average_User_Rating > 0, 'Yes Rating', 'No Rating'))
+
+genre_user_rating = subset(appData, select = c("Primary_Genre", "User_Rating"))
+# genre_user_rating
+
+agg_table <- genre_user_rating %>% 
+             group_by(Primary_Genre, User_Rating) %>%
+             summarise(total_count = n(), .groups = 'drop') %>%
+             pivot_wider(names_from = User_Rating, values_from = total_count, values_fill = 0)
+colnames(agg_table) <- c("Primary_Genre", "No_Rating", "Yes_Rating")
+# print(agg_table)
+
+agg_table$Total_Rating <- agg_table$No_Rating + agg_table$Yes_Rating
+agg_table$no_rating_percent <- round((agg_table$No_Rating/agg_table$Total_Rating) * 100, 2)
+agg_table$yes_rating_percent <- round((agg_table$Yes_Rating/agg_table$Total_Rating) * 100, 2)
+# print(agg_table)
+
+#----------
+percent_rating_table <- subset(agg_table, select = c("Primary_Genre", "no_rating_percent", "yes_rating_percent"))
+
+least_rating <- percent_rating_table %>% arrange(desc(no_rating_percent))
+least_rating <- least_rating[1:10, ]
+# print(least_rating)
+
+most_rating <- percent_rating_table %>% arrange(desc(yes_rating_percent))
+most_rating <- most_rating[1:10, ]
+# print(most_rating)
+
+#-----------
+least_rating <- gather(least_rating, key = "Rating", value = "Count", -Primary_Genre)
+least_ratings_bar <- ggplot(least_rating, aes(x = Primary_Genre, y = Count, fill = Rating)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Distribution of 'Rating' across 'Genre' among Lowest rating apps", caption = 'Bar chart', x = "Primary Genre", y = "Percentage of ratings", fill = "Rating") +
+  scale_fill_manual(values = c("yes_rating_percent" = "chartreuse3", "no_rating_percent" = "firebrick2")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+least_ratings_bar
+
+#---------
+most_rating <- gather(most_rating, key = "Rating", value = "Count", -Primary_Genre)
+most_ratings_bar <- ggplot(most_rating, aes(x = reorder(Primary_Genre, -Count), y = Count, fill = Rating)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Distribution of 'Rating' across 'Genre' among Highest rating apps", caption = 'Bar chart', x = "Primary Genre", y = "Percentage of ratings", fill = "Rating") +
+  scale_fill_manual(values = c("yes_rating_percent" = "chartreuse3", "no_rating_percent" = "firebrick2")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+most_ratings_bar
+
+```
+
+## Analysis of App size
+### Frequency
+**Frequency of 'Size_Bytes' for sampled data**
+```{r sizebyte_freq_barplot_17}
+sampled_data$Size_MB <- sampled_data$Size_Bytes / (1024^2)
+
+sampled_data$Size_Group <- cut(sampled_data$Size_MB, 
+                               breaks = seq(0, max(sampled_data$Size_MB), by = 50),
+                               labels = seq(25, max(sampled_data$Size_MB) - 25, by = 50))
+
+ggplot(sampled_data, aes(x = Size_Group)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of App Sizes (in MB) - Sampled Data",
+       x = "Size (MB)",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
