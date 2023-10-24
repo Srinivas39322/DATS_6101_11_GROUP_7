@@ -804,6 +804,7 @@ The Distribution of App Sizes (in MB) graph from the aforementioned plots shows 
 
 </p>
 
+## Conclusion
 **Key Takeaways from the Mobile App Market Analysis:**
 <p>
 
