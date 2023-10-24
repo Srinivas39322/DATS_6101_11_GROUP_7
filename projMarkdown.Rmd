@@ -662,6 +662,12 @@ ggplot(sampled_data, aes(x = Rating_Group)) +
        y = "Frequency") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+<p> 
+
+From the bar plot obtained from the above, we could see from the distribution of the average user rating that there is a big disparity between ratings that are given and ratings that are not given (NA).
+Additionally, we can infer that the majority of users either provide ratings above 4.25 or do not provide any ratings.
+
+</p>
 
 **Creating User_Rating_Type column for various ranges of the ratings**
 
@@ -707,6 +713,12 @@ ggplot(data_longg, aes(x = Primary_Genre, y = Percentage, fill = Rating)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_y_continuous(labels = scales::percent_format(scale = 1))
 ```
+
+<p>
+
+From the above plot, according to category, the most no ratings (NA) are contributed by developer tools and food and drink applications, whereas weather apps and gaming apps contribute a higher number of ratings, indicating high user involvement.
+
+</p>
 
 ### Most and least rated
 
@@ -761,6 +773,11 @@ most_ratings_bar
 
 ```
 
+<p>
+
+According to the aforementioned plots, the highest rated apps distribution of "Rating" across "Genre" shows that photo and video apps, games, and weather apps all contribute significantly to higher ratings. Developer tools and food & drink apps give the majority of the rating in the no ratings category and the least amount of rating in the ratings category among lowest rated apps, respectively, in the distribution of "Rating" across "Genre" among lowest rated apps.
+
+</p>
 ## Analysis of App size
 
 ### Frequency
@@ -781,3 +798,8 @@ ggplot(sampled_data, aes(x = Size_Group)) +
        y = "Frequency") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+<p>
+
+The Distribution of App Sizes (in MB) graph from the aforementioned plots shows that the bulk of apps fall into the 0–25 MB and 25–75 MB groups. This suggests that the majority of apps are modest, with usual sizes under 25MB, making downloading and storage straightforward.
+
+</p>
