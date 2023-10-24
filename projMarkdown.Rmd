@@ -800,7 +800,7 @@ ggplot(sampled_data, aes(x = Size_Group)) +
 ```
 <p>
 
-The Distribution of App Sizes (in MB) graph from the aforementioned plots shows that the bulk of apps fall into the 0–25 MB and 25–75 MB groups. This suggests that the majority of apps are modest, with usual sizes under 25MB, making downloading and storage straightforward.
+The Distribution of App Sizes (in MB) graph from the aforementioned plots shows that the bulk of apps fall into the 0–25 MB and 25–75 MB groups. This suggests that the majority of apps are modest, with usual sizes under 25MB, making the download and storage of apps easy on the device.
 
 </p>
 
