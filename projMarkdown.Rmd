@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Apple AppStore apps"
+title: "Analytical Insights into iOS App Profitability"
 author: "Krishnasurya Gopalakrishnan, Monica Muniraj, Shashank Shivakumar, Srinivas Saiteja Tenneti"
 output: 
   html_document:
@@ -256,6 +256,18 @@ library(gridExtra)
 
 <!-- print(head(appData,1)) -->
 <!-- ``` -->
+
+## Introduction
+<p>
+In the ever-evolving realm of mobile applications, a pivotal question echoes in the minds of developers and investors alike: where should one invest their resources, and what factors truly define an app's success? As the year 2021 ended, the digital landscape stood witness to a remarkable phenomenon: Apple's App Store, adorned with a staggering 1.6 million iOS applications. Despite the vast expanse of Google's Play Store, housing 3.5 million apps, the App Store emerged as a beacon of innovation and opportunity.
+
+Welcome to our exploration within this vibrant ecosystem – the second-largest app marketplace globally – where innovation seamlessly intertwines with consumer preferences. Here, at the heart of Apple's App Store, our mission unfolds. We delve deep into the intricate web of variables that shape an app's destiny, exploring the realms of price, size, user ratings, and categories. These elements are not mere data points; they are the building blocks of informed decisions.
+
+Our primary objective is clear: to identify the core variables that significantly influence an app's market triumph and profitability. For developers and investors, this knowledge is paramount, guiding their strategic choices in the ever-competitive app market. This isn't just an exploration; it's a journey where insights illuminate pathways to success, transforming raw data into boundless opportunities.
+
+Join us in this odyssey, where data paints a vivid picture of potential and where every insight is a steppingstone towards informed, strategic decisions. Welcome to a realm where exploration isn't just a venture; it's the key to unlocking the infinite possibilities within the digital cosmos of mobile applications.
+
+</p>
 
 
 ## Descriptive statistics
@@ -631,6 +643,10 @@ ggplot(fp_agg_longg, aes(x = Primary_Genre, y = Percentage, fill = Type)) +
   scale_y_continuous(labels = scales::percent_format(scale = 1))
 ```
 
+<p>The pie chart shows that 8.37% of the content is free, while 91.63% of the content is paid.It's evident that the majority of apps on the App Store are free, with only a smaller portion being paid.
+The bar chart shows the distribution of free and paid apps across genres in the Apple App Store.The most popular genre is Games, with over 500,000 free and paid apps combined whereas Books, Developer tools, Magazines & Newspapers genres have the fewest free and paid apps.The number of free apps in each genre is typically several times higher than the number of paid apps.
+The stacked percentage bar chart shows the percentage distribution of free and paid apps across genres. We see that stickers app despite accounting for a very little percentage of the market, has the highest paid apps followed by developer tools and graphics & design.
+</p>
 ## Analysis of Ratings
 
 ### Frequency
