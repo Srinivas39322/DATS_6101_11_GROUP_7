@@ -123,7 +123,11 @@ ggplot(missing_data, aes(x = Column, y = MissingValues)) +
 **Barplot showing the number of missing values in columns 'Developer_Url', 'Developer_Website' and 'Released' columns**
 ```{r categorical_missing_values_barplot}
 
-# Subset data
+blank_developer_url <- sum(is.na(appData$Developer_Url) | appData$Developer_Url == "")
+blank_developer_website <- sum(is.na(appData$Developer_Website) | appData$Developer_Website == "")
+Released <- sum(is.na(appData$Released) | appData$Released == "")
+
+# Create a data frame for plotting
 missing_data <- data.frame(
   Column = c('Developer_Url', 'Developer_Website', 'Released'),
   Missing_Values = c(blank_developer_url, blank_developer_website, Released)
