@@ -523,7 +523,27 @@ In conclusion, even though the graph depicts an almost even distribution between
 aov_result <- aov(Average_User_Rating ~ Primary_Genre, data=appData)
 summary(aov_result)
 ```
+The results of ANOVA (Analysis of Variance) test comparing the \`Primary_Genre\` to the \`Average_User_Rating\` depicts.
 
+1.  **Primary_Genre**: Represents the different levels or categories of the \`Primary_Genre\` variable. The \`25\` under this indicates there are 25 different genres being compared.
+
+2.  **Df (Degrees of Freedom)**: <br>For Primary_Genre: 25, which means there are 26 genres being compared (df is one less than the number of levels). <br>For Residuals: 1230346, representing the variability within each genre group.
+
+3.  **Sum Sq (Sum of Squares)**: <br>For Primary_Genre: 250995, represents the between-group variability. <br>For Residuals: 5458134, represents the within-group variability.
+
+4.  **Mean Sq (Mean Squares)**: <br>For Primary_Genre: 10040, the average variance explained by genres. <br>For Residuals: 4, the average variability within each genre.
+
+5.  **F value**: 2263 indicates the test statistic used to determine if the means of several groups are equal. It's calculated by dividing the Mean Sq of Primary_Genre by the Mean Sq of Residuals.
+
+6.  **Pr(\>F)**: Indicates the p-value, which is less than 2e-16 (extremely small), signifying strong evidence against the null hypothesis.
+
+7.  **Signif. codes**: A shorthand to describe the significance of results. The \`\<2e-16 \*\` indicates that the results are highly significant.
+
+**Null Hypothesis (\( H_0 \))**: The average user rating is the same across all primary genres.
+
+**Alternate Hypothesis (\( H_1 \))**: The average user rating is not the same for at least one primary genre when compared to others.
+
+Given the extremely small p-value (much less than 0.05), we would reject the null hypothesis, suggesting that there's a statistically significant difference in the average user rating across different primary genres.
 
 ## Analysis of Price
 ### Frequency
