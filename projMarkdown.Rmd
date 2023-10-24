@@ -498,7 +498,7 @@ ggplot(pgcr_data_longg, aes(x = Primary_Genre, y = Percentage, fill = Rating)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_y_continuous(labels = scales::percent_format(scale = 1))
 ```
-<p> A stacked percentage bar chart of the distribution of various content ratings across different genres shows that apps belonging to the 4+ category are distributed evenly in all the genres with a few exceptions in Medicine, Social Networking and News. </p>
+<p> This graph hows that apps belonging to the 4+ category take up almost over 75% of the total apps in each category and are almost evenly distributed in all the genres with a few exceptions in Medicine, Social Networking and News.</p>
 
 ### Pearson's Chi-squared and ANOVA tests
 
