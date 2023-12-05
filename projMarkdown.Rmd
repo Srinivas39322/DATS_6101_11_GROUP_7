@@ -925,3 +925,4 @@ ggplot(sampled_data, aes(x = Size_Group)) +
 These conclusions collectively provide insights into the current state of the mobile app market, including the dominance of gaming and children's apps, greater user engagement with weather apps, the prevalence of free apps, and the importance of keeping app sizes manageable for users.
 
 </p>
+--
