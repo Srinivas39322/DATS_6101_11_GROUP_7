@@ -908,7 +908,6 @@ ggplot(sampled_data, aes(x = Size_Group)) +
 ## Conclusion
 
 **Key Takeaways from the Mobile App Market Analysis:**
-
 <p>
 
 1.  **The gaming genre is ruling the app world, capturing a significant share of the market**:
