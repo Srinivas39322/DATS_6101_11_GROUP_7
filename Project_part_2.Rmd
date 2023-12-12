@@ -1,0 +1,67 @@
+---
+title: "Project"
+author: "Author"
+date: "r Sys.Date()"
+output: html_document
+---
+<p> 
+# Loading necessary libraries and setting options
+# The code sets up required libraries and adjusts some options for data processing.
+# It includes libraries for data manipulation, visualization, and modeling.
+</p>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = F, message = F)
+options(scientific=T, digits = 3)
+
+library(ezids)
+library(tidyr)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(pROC)
+library(randomForest)
+
+```
+<p> 
+# Reading and preprocessing the dataset
+# This section reads in a dataset named 'appleAppData.csv' and preprocesses it by handling missing values,
+# creating new features based on existing ones, converting data types, and deriving meaningful metrics.
+</p>
+```{r}
+df = read.csv('appleAppData.csv')
+df <- na.omit(df)
+
+df$Released_Year <- year(df$Released)
+df$Updated_Year <- year(df$Updated)
+
+df$Primary_Genre <- as.factor(df$Primary_Genre)
+df$Content_Rating <- as.factor(df$Content_Rating)
+df$DeveloperId <- as.factor(df$DeveloperId)
+df$Released_Year <- as.factor(df$Released_Year)
+df$Updated_Year <- as.factor(df$Updated_Year)
+
+df$Size_MB <- df$Size_Bytes / (1024^2)
+df$Size_Group <- cut(df$Size_MB,
+                     breaks = seq(0, max(df$Size_MB), by = 50),
+                     labels = seq(25, max(df$Size_MB) - 25, by = 50))
+```
+
+```{r}
+df$Primary_genre <- as.numeric(factor(df$Primary_Genre))
+df$Content_rating <- as.numeric(factor(df$Content_Rating))
+df$Free_Paid <- as.numeric(factor(df$Free))
+df$Developer_ID <- as.numeric(df$DeveloperId)
+df$Released_year <- as.numeric(df$Released_Year)
+df$Updated_year <- as.numeric(df$Updated_Year)
+
+print(str(df))
+
+library(corrplot)
+corr_matrix <- cor(df[, c("Primary_genre", "Content_rating", "Developer_ID", "Size_MB", "Average_User_Rating", "Reviews", "Released_year", "Updated_year", "Free_Paid")])
+par(mfrow = c(1,1), mar = c(10,10,10,10)) 
+corrplot(corr_matrix, method = "color", type = "upper", tl.col = "black", tl.srt = 45, addCoef.col = "black",tl.cex = 0.7,
+  number.cex = 0.7)
+
+```
