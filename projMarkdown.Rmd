@@ -158,7 +158,7 @@ library(gridExtra)
 
 <!-- ```{r numerical_missing_values_barplot} -->
 
-<!-- # Calculate missing values per column -->
+<!-- #Calculate missing values per column -->
 
 <!-- missing_values_per_column <- colSums(is.na(appData)) -->
 
