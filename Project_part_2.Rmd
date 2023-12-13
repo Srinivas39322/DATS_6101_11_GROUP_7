@@ -79,6 +79,7 @@ df$Updated_year <- as.numeric(df$Updated_Year)
 print(str(df))
 ```
 ## Evaluating Feature Importance in App Pricing Prediction Using Random Forest
+
 ```{r}
 features <- c("Primary_Genre", "Content_Rating", "Size_MB", "Average_User_Rating", "Reviews", "Released_Year", "Updated_Year")
 target <- "Free"
@@ -87,7 +88,6 @@ rf_model <- randomForest(as.factor(Free) ~ ., data = df[, c(features, target)], 
 importance <- importance(rf_model)
 print(importance)
 ```
-
 <p>
 The importance of each feature is measured by the Mean Decrease in Gini coefficient, which indicates how much each feature contributes to the homogeneity of the nodes and leaves in the model. 
 
@@ -106,6 +106,7 @@ The importance of each feature is measured by the Mean Decrease in Gini coeffici
 In summary, the Random Forest model highlights the diverse factors that contribute to the pricing model of an app, with the genre and size being the most significant. These insights can guide app developers and marketers in understanding what aspects might influence an app's likelihood of being free or paid.
 </p>
 
+## Selected Features for analysis
 ```{r}
 selected_columns <- c("Primary_Genre", "Size_MB", "Average_User_Rating", "Released_Year", "Free")
 
@@ -118,9 +119,11 @@ levels(df$Free) <- c(0, 1)
 str(df)
 ```
 
-### Logistic Regression
+## Logistic Regression
+### Methodology: Choosing Logistic Regression for Predicting App Pricing Models
+
 <p>
-Why we are choosing Logistic Regression (I think - since the nature of the target variable is binomial in nature)
+In our analysis to predict whether mobile apps will be free or paid, we have chosen Logistic Regression as our primary statistical method. This decision is grounded in the nature of our target variable, which is binomial, presenting two distinct categories: free or paid. Logistic Regression is particularly adept at handling such binary outcomes. It operates by estimating the probability of an event occurrence, in this case, the likelihood of an app being free, based on various predictor variables such as app genre, target age group, and prevailing market trends. Its ability to provide probabilities and classify outcomes into distinct categories makes it an ideal choice for our predictive model. Furthermore, Logistic Regression is robust, relatively easy to implement, and interpret, which aids in the clear presentation and understanding of our results. These qualities collectively make Logistic Regression a fitting and reliable choice for our analysis in forecasting the pricing model of upcoming mobile apps.
 </p>
 
 ```{r}
