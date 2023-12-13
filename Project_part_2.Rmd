@@ -207,6 +207,16 @@ We achieved this balance by randomly sampling 102,502 free apps from the origina
 This balancing process is crucial for avoiding bias in our predictive modeling. When datasets are imbalanced, there's a risk that the model will learn to predict the majority class better at the expense of the minority class. By balancing the number of instances in each class, we ensure that our model is exposed to an equal representation of both free and paid apps, thereby enhancing its ability to make accurate and unbiased predictions across all categories of apps.
 </p>
 
+## Generalized Linear Models (GLM)
+<p>
+In our analysis, we have utilized Generalized Linear Models (GLM), a flexible extension of ordinary linear regression that allows for response variables to have error distribution models other than a normal distribution. GLMs are particularly useful in cases where the response variable is binary or categorical, as is the case with our target variable 'Free', which represents whether an app is free or paid.
+
+GLMs consist of three components: a random component specifying the distribution of the response variable (in our case, binomial for binary outcomes), a systematic component that describes the predictors, and a link function that connects the mean of the response variable to the predictors. This approach allows for a more nuanced and accurate modeling of relationships between the dependent and independent variables, especially when dealing with non-normal distributions.
+
+In the context of our study, the logistic regression, a type of GLM, is particularly suitable for modeling the probability of a categorical outcome. It predicts the log-odds of the probability of an event (such as an app being free) as a linear combination of the predictor variables, providing insights into how each predictor is associated with the likelihood of the app being free or paid.
+
+Utilizing GLM has enabled us to effectively handle the binary nature of our target variable and to understand the influence of various predictors on the probability of an app being offered for free in the market.
+</p>
 ```{r}
 logistic_model <- glm(Free ~ ., data = merged_df, family = binomial)
 summary(logistic_model)
