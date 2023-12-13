@@ -40,6 +40,17 @@ Our primary goal is straightforward: discern the pivotal variables that substant
 Join us in this analytical expedition, where data narratives guide our way, and each insight serves as a beacon for informed strategic choices. Step into a world where in-depth research becomes the linchpin to harnessing the vast potential of the mobile application universe.
 </p>
 
+## Project 1 analysis:
+<p>
+Based on the findings from Project Phase 1, it is evident that the mobile app market is predominantly influenced by several key factors. The gaming genre emerges as a market leader, demonstrating its wide appeal and high user engagement. Significantly, apps rated for ages 4 and above dominate the market, accounting for around 80% of all apps, which indicates a strong demand for family-friendly content. Furthermore, free apps constitute 90% of the market, a trend likely driven by alternative revenue models like in-app purchases and advertisements. Weather apps notably stand out for receiving the most user ratings, reflecting their high user interaction, while developer-oriented apps have a narrower user base, as seen in their fewer ratings. Additionally, the majority of apps are designed to be compact, typically under 25MB, catering to ease of download and efficient storage management. These insights collectively shape our understanding of the current mobile app landscape, highlighting the significance of gaming and children-friendly apps, user preferences for free and compact apps, and the high engagement with certain app categories like weather apps. 
+</p>
+
+## SMART Question: 
+<p>
+Forecasting the likelihood of new apps being offered for free or as paid versions.
+</p>
+
+## Descriptive statistics
 ```{r}
 df = read.csv('appleAppData.csv')
 df <- na.omit(df)
