@@ -175,6 +175,7 @@ Such a skewed distribution can result in a model that, despite potentially high 
 To address this issue and ensure a more balanced and fair representation in our predictive modeling, we may need to employ techniques such as resampling the dataset, either by oversampling the minority class (paid apps) or undersampling the majority class (free apps), or applying advanced algorithms that are designed to handle imbalanced data. This will help in improving the model's ability to generalize and accurately predict both free and paid apps, thereby enhancing the robustness and reliability of our predictive analysis. 
 </p>
 
+## Balancing the Dataset for Equitable Model Training
 ```{r}
 free_apps_sample <- free_apps %>% sample_n(102502)
 print(nrow(free_apps_sample))
@@ -198,6 +199,7 @@ merged_df_paid_apps <- df[df$Free == 0, ]
 print(nrow(merged_df_free_apps))
 print(nrow(merged_df_paid_apps))
 ```
+
 ```{r}
 logistic_model <- glm(Free ~ ., data = merged_df, family = binomial)
 summary(logistic_model)
