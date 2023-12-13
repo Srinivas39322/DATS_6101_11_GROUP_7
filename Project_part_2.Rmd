@@ -73,3 +73,30 @@ corrplot(corr_matrix, method = "color", type = "upper", tl.col = "black", tl.srt
   number.cex = 0.7)
 
 ```
+```{r}
+num_unique_values <- length(unique(df$DeveloperId))
+print(num_unique_values)
+```
+```{r}
+features <- c("Primary_Genre", "Content_Rating", "Size_MB",
+              "Average_User_Rating", "Reviews",
+              "Released_Year", "Updated_Year")
+target <- "Free"
+
+rf_model <- randomForest(as.factor(Free) ~ .,
+                         data = df[, c(features, target)], ntree = 100)
+importance <- importance(rf_model)
+print(importance)
+```
+```{r}
+selected_columns_1 <- c("Primary_Genre", "Content_Rating", "Average_User_Rating", "Reviews", "Released_Year", "Size_MB", "Free")
+selected_columns_2 <- c("Primary_Genre", "Size_MB", "Average_User_Rating", "Released_Year", "Free")
+
+# df <- df[selected_columns_1]
+df <- df[selected_columns_2]
+df$Free <- as.factor(df$Free)
+levels(df$Free) <- c(0, 1)
+
+na_counts <- colSums(is.na(df))
+print(na_counts)
+```
