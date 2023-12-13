@@ -237,8 +237,6 @@ dff <- df[selected_columns_3]
 colnames(dff)
 nrow(dff)
 ```
-
-
 ```{r}
 # Assuming df is your data frame with the dependent variable 'Free' and other predictor variables
 
@@ -255,7 +253,7 @@ registerDoParallel(cl)
 
 rf_model <- randomForest(Free ~ ., data = merged_df, ntree = 500, mtry = sqrt(ncol(merged_df) - 1), ncores = detectCores())
 
-``
+```
 ```{r}
 summary(rf_model)
 ```
