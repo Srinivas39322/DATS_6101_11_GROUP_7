@@ -10,3 +10,45 @@ actual_values <- factor(merged_df$Free, levels = levels(merged_df$Free))
 conf_matrix <- confusionMatrix(predictions, actual_values)
 print(conf_matrix)
 ```
+# Random Forest
+
+```{r}
+selected_columns_3 <- c("Size_MB", "Average_User_Rating", "Released_Year", "Free")
+dff <- df[selected_columns_3]
+colnames(dff)
+nrow(dff)
+```
+
+```{r}
+# Assuming df is your data frame with the dependent variable 'Free' and other predictor variables
+
+# Install and load the randomForest package if not already installed
+# install.packages("randomForest")
+library(randomForest)
+
+# Set a seed for reproducibility
+set.seed(123)
+
+library(doParallel)
+cl <- makeCluster(detectCores())
+registerDoParallel(cl)
+
+rf_model <- randomForest(Free ~ ., data = merged_df, ntree = 500, mtry = sqrt(ncol(merged_df) - 1), ncores = detectCores())
+
+```
+
+```{r}
+summary(rf_model)
+```
+
+```{r}
+# Assuming 'your_test_data' is your testing dataset
+# predictions_rf <- factor(ifelse(predict(rf_model, newdata = merged_df, type = "response") > 0.5, 1, 0), levels = levels(merged_df$Free))
+predictions_rf <- predict(rf_model, newdata = merged_df, type = "response")
+results_rf <- data.frame(Actual = merged_df$Free, Predicted = predictions_rf)
+library(caret)
+
+# Create a confusion matrix
+confusion_matrix_rf <- confusionMatrix(table(results_rf$Predicted, results_rf$Actual))
+print(confusion_matrix_rf)
+```
