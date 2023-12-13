@@ -2,7 +2,13 @@
 title: "Predicting app costs in Apple App store"
 author: "Krishnasurya Gopalakrishnan, Monica Muniraj, Shashank Shivakumar, Srinivas Saiteja Tenneti"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    number_sections: false
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -23,8 +29,15 @@ library(corrplot)
 ```
 
 ## Introduction
+
 <p>
-Predicting if apps are going to be free or not -- from our eda we saw -- what all columns are useful -- what all columns we have filtered for feature selection
+In the dynamic world of mobile applications, a pressing question resonates among developers and investors: where should they channel their resources, and what elements truly dictate an app's success? As 2021 came to a close, the App Store, with its impressive roster of 1.6 million iOS applications, stood out as a hub of innovation and potential, even in comparison to Google's expansive Play Store with its 3.5 million apps.
+
+This report embarks on an analytical journey into the second-largest app marketplace worldwide -- Apple's App Store. Here, we aim to unravel the myriad factors that determine an app's trajectory, from its pricing and size to user ratings and categories. These aren't just statistics; they form the foundation of strategic decision-making.
+
+Our primary goal is straightforward: discern the pivotal variables that substantially impact an app's market success and profitability. For stakeholders, understanding these nuances is essential, providing a compass in the intensely competitive landscape of app development and marketing. This exploration aims to convert data into actionable insights, offering a roadmap to success.
+
+Join us in this analytical expedition, where data narratives guide our way, and each insight serves as a beacon for informed strategic choices. Step into a world where in-depth research becomes the linchpin to harnessing the vast potential of the mobile application universe.
 </p>
 
 ```{r}
