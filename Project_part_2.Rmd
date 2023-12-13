@@ -140,8 +140,24 @@ conf_matrix_2 <- confusionMatrix(predictions_2, actual_values_2)
 print(conf_matrix_2)
 ```
 <p>
-From the above model metrics we can see that, although the model's accuracy is over 90% and the specificity being over 99%
+The confusion matrix generated from our Logistic Regression model provides crucial insights into the model's performance in predicting whether apps are free or paid. The matrix indicates that out of the total predictions made, 12,100 were correctly predicted as paid (true negatives), and 1,121,792 were correctly predicted as free (true positives). However, there were 55,91 instances where paid apps were incorrectly predicted as free (false positives), and 90,402 instances where free apps were incorrectly predicted as paid (false negatives).
+
+The overall accuracy of the model is 92.2%, as indicated by the accuracy metric. This suggests that our model correctly predicts the pricing model of the apps 92.2% of the time. The 95% Confidence Interval for the accuracy is between 92.1% and 92.2%, indicating that the model's accuracy is consistently high.
+
+The Kappa statistic is 0.181, which, while indicating some level of agreement between the predictions and actual values, suggests that the agreement is relatively low. This is corroborated by the balanced accuracy (the average of sensitivity and specificity) being 55.654%, showing that the model's ability to accurately identify both classes (free and paid) is moderate.
+
+Sensitivity, or the true positive rate, is 11.805%. This indicates that the model correctly identifies 11.805% of the actual free apps. Specificity, or the true negative rate, is high at 99.504%, meaning the model is highly effective at identifying paid apps correctly.
+
+The Positive Predictive Value, or precision, is 68.396%. This means that when the model predicts an app is paid, there's a 68.396% chance that it is correct. The Negative Predictive Value is 92.542%, indicating a high probability that when the model predicts an app is free, it is indeed free.
+
+The model's No Information Rate is 91.7%, and the P-Value [Accuracy > NIR] is less than 2e-16, which suggests that the model is statistically significantly better than a naive model that would always predict the most frequent class.
+
+Mcnemar's Test P-Value is also less than 2e-16, indicating a significant difference in the performance of the model between the two classes.
+
+In summary, while the model shows high overall accuracy and specificity, its sensitivity and kappa score are relatively low. This indicates that the model is more reliable in predicting paid apps than free apps. These results should be considered in the context of the model's application, and further refinement may be required to improve its sensitivity.
+
 </p>
+
 ## Distribution of Target variable
 ```{r}
 free_apps <- df[df$Free == 1, ]
@@ -152,7 +168,13 @@ print(nrow(paid_apps))
 ```
 
 <p>
-From the above result we can see that there is a huge disparity between the two levels in the target variable. Almost a 11:1 ratio. Models trained on this data will result in bias in their predictions. 
+The data exploration has revealed a significant imbalance in the distribution of our target variable, which categorizes apps as either free (1) or paid (0). This imbalance is evident in the number of instances of each class: there are 1,127,383 free apps compared to only 102,502 paid apps. This disparity represents an approximate ratio of 11:1, indicating that for every paid app in our dataset, there are 11 free apps.
+
+This imbalance in the dataset is a critical factor to consider, as it can lead to biased predictions in our machine learning models. Models trained on this data are likely to be better at predicting the more common class (free apps) due to their higher representation in the data. Consequently, the model might underperform in accurately identifying the less common class (paid apps), as it has significantly fewer examples to learn from.
+
+Such a skewed distribution can result in a model that, despite potentially high overall accuracy, may not truly reflect its effectiveness in predicting both classes equally well. This scenario is known as class imbalance, and it is a common issue in machine learning that can lead to misleadingly optimistic performance metrics, particularly if those metrics do not account for the distribution of the classes.
+
+To address this issue and ensure a more balanced and fair representation in our predictive modeling, we may need to employ techniques such as resampling the dataset, either by oversampling the minority class (paid apps) or undersampling the majority class (free apps), or applying advanced algorithms that are designed to handle imbalanced data. This will help in improving the model's ability to generalize and accurately predict both free and paid apps, thereby enhancing the robustness and reliability of our predictive analysis. 
 </p>
 
 ```{r}
