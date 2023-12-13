@@ -1,3 +1,77 @@
+---
+title: "Predicting app costs in Apple App store"
+author: "Krishnasurya Gopalakrishnan, Monica Muniraj, Shashank Shivakumar, Srinivas Saiteja Tenneti"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = F, message = F)
+options(scientific=T, digits = 3)
+
+library(ezids)
+library(tidyr)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(pROC)
+library(randomForest)
+library(dplyr)
+library(corrplot)
+```
+
+## Introduction
+<p>
+Predicting if apps are going to be free or not -- from our eda we saw -- what all columns are useful -- what all columns we have filtered for feature selection
+</p>
+
+```{r}
+df = read.csv('appleAppData.csv')
+df <- na.omit(df)
+
+df$Released_Year <- year(df$Released)
+df$Updated_Year <- year(df$Updated)
+
+df$Primary_Genre <- as.factor(df$Primary_Genre)
+df$Content_Rating <- as.factor(df$Content_Rating)
+df$DeveloperId <- as.factor(df$DeveloperId)
+df$Released_Year <- as.factor(df$Released_Year)
+df$Updated_Year <- as.factor(df$Updated_Year)
+
+df$Size_MB <- df$Size_Bytes / (1024^2)
+df$Size_Group <- cut(df$Size_MB,
+                     breaks = seq(0, max(df$Size_MB), by = 50),
+                     labels = seq(25, max(df$Size_MB) - 25, by = 50))
+
+df$Primary_genre <- as.numeric(factor(df$Primary_Genre))
+df$Content_rating <- as.numeric(factor(df$Content_Rating))
+df$Free_Paid <- as.numeric(factor(df$Free))
+df$Developer_ID <- as.numeric(df$DeveloperId)
+df$Released_year <- as.numeric(df$Released_Year)
+df$Updated_year <- as.numeric(df$Updated_Year)
+
+print(str(df))
+```
+
+```{r}
+# num_unique_values <- length(unique(df$DeveloperId))
+# print(num_unique_values)
+```
+
+```{r}
+features <- c("Primary_Genre", "Content_Rating", "Size_MB", "Average_User_Rating", "Reviews", "Released_Year", "Updated_Year")
+target <- "Free"
+
+rf_model <- randomForest(as.factor(Free) ~ ., data = df[, c(features, target)], ntree = 100)
+importance <- importance(rf_model)
+print(importance)
+```
+
+<p>
+From the MeanDegreeGini ---, we can see that ---, ---, ---, --- columns tend to have the highest impact on the target variable and further models are built using these columns as predictors.
+</p>
 
 ```{r}
 selected_columns <- c("Primary_Genre", "Size_MB", "Average_User_Rating", "Released_Year", "Free")
