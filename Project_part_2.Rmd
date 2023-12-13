@@ -220,6 +220,13 @@ dff <- df[selected_columns_3]
 colnames(dff)
 nrow(dff)
 ```
+<p>
+In the process of preparing our dataset for more effective model training, we implemented a crucial step: balancing the dataset to address the disparity between free and paid apps. Initially, our dataset exhibited a significant imbalance, with 1,127,383 free apps and only 102,502 paid apps, a ratio of approximately 11:1. To rectify this, we created a balanced dataset where the number of free and paid apps is equal, enhancing the fairness and accuracy of our subsequent model training.
+
+We achieved this balance by randomly sampling 102,502 free apps from the original dataset, matching the number of paid apps. This resulted in a new, balanced dataset ('merged_df') consisting of 205,004 observations, split evenly between free and paid apps. This balanced dataset includes variables such as 'Primary_Genre', 'Size_MB', 'Average_User_Rating', 'Released_Year', and 'Free'. Additionally, to ensure the randomness and generalizability of our dataset, we shuffled the data.
+
+This balancing process is crucial for avoiding bias in our predictive modeling. When datasets are imbalanced, there's a risk that the model will learn to predict the majority class better at the expense of the minority class. By balancing the number of instances in each class, we ensure that our model is exposed to an equal representation of both free and paid apps, thereby enhancing its ability to make accurate and unbiased predictions across all categories of apps.
+</p>
 
 ```{r}
 # Assuming df is your data frame with the dependent variable 'Free' and other predictor variables
