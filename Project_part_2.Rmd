@@ -29,7 +29,6 @@ library(corrplot)
 ```
 
 ## Introduction
-
 <p>
 In the dynamic world of mobile applications, a pressing question resonates among developers and investors: where should they channel their resources, and what elements truly dictate an app's success? As 2021 came to a close, the App Store, with its impressive roster of 1.6 million iOS applications, stood out as a hub of innovation and potential, even in comparison to Google's expansive Play Store with its 3.5 million apps.
 
@@ -166,7 +165,6 @@ paid_apps <- df[df$Free == 0, ]
 print(nrow(free_apps))
 print(nrow(paid_apps))
 ```
-
 <p>
 The data exploration has revealed a significant imbalance in the distribution of our target variable, which categorizes apps as either free (1) or paid (0). This imbalance is evident in the number of instances of each class: there are 1,127,383 free apps compared to only 102,502 paid apps. This disparity represents an approximate ratio of 11:1, indicating that for every paid app in our dataset, there are 11 free apps.
 
@@ -212,7 +210,7 @@ actual_values <- factor(merged_df$Free, levels = levels(merged_df$Free))
 conf_matrix <- confusionMatrix(predictions, actual_values)
 print(conf_matrix)
 ```
-# Random Forest
+## Analysis of Random Forest Model Performance
 
 ```{r}
 selected_columns_3 <- c("Size_MB", "Average_User_Rating", "Released_Year", "Free")
@@ -237,8 +235,7 @@ registerDoParallel(cl)
 
 rf_model <- randomForest(Free ~ ., data = merged_df, ntree = 500, mtry = sqrt(ncol(merged_df) - 1), ncores = detectCores())
 
-```
-
+``
 ```{r}
 summary(rf_model)
 ```
@@ -261,6 +258,8 @@ The model's output summary provides several important metrics:
 This Random Forest model provides a comprehensive analysis of the 'Free' variable in the dataset, employing advanced computational techniques for efficient and accurate predictions. The model's performance metrics, such as error rate and confusion matrix, offer valuable insights into its prediction accuracy and reliability.
 </p>
 
+## Performance Evaluation of Random Forest Model
+
 ```{r}
 # Assuming 'your_test_data' is your testing dataset
 # predictions_rf <- factor(ifelse(predict(rf_model, newdata = merged_df, type = "response") > 0.5, 1, 0), levels = levels(merged_df$Free))
@@ -272,8 +271,27 @@ library(caret)
 confusion_matrix_rf <- confusionMatrix(table(results_rf$Predicted, results_rf$Actual))
 print(confusion_matrix_rf)
 ```
-## Conclusion
+<p>
+The confusion matrix derived from the Random Forest model reveals significant insights into its predictive accuracy:
 
+- **Confusion Matrix Breakdown**: The model correctly predicted 86,170 instances of class 0 (presumably 'paid apps') and 90,783 instances of class 1 ('free apps'). There were 11,719 false positives (class 0 predicted when it was actually class 1) and 16,332 false negatives (class 1 predicted when it was actually class 0).
+
+- **Accuracy**: The model achieved an overall accuracy of 86.3%, with a 95% Confidence Interval (CI) ranging from 86.2% to 86.5%. This indicates a high level of predictive accuracy.
+
+- **Kappa Statistic**: A Kappa value of 0.726 suggests a substantial agreement between the predicted and actual classifications, beyond what would be expected by chance.
+
+- **Mcnemar's Test**: The P-value from Mcnemar's Test is less than 2e-16, indicating a significant difference in the model's prediction errors between the two classes.
+
+- **Sensitivity and Specificity**: The model has a sensitivity (true positive rate) of 84.1% and a specificity (true negative rate) of 88.6%, indicating its effectiveness in correctly identifying both 'paid' and 'free' apps.
+
+- **Predictive Values**: The Positive Predictive Value (PPV) is 88.0%, and the Negative Predictive Value (NPV) is 84.8%, both of which are high, showcasing the model's reliability in its predictions.
+
+- **Balanced Accuracy**: The balanced accuracy of 86.3% further confirms the model's robustness in handling both classes evenly.
+
+In summary, the Random Forest model demonstrates high accuracy, sensitivity, and specificity in predicting the 'Free' status of apps, with a substantial agreement as indicated by the Kappa statistic. The balanced accuracy and predictive values highlight the model's effectiveness in classifying both 'paid' and 'free' apps accurately.
+</p>
+
+## Conclusion
 <p>
 
 1. **Addressing Skewness in Data**: Recognizing and addressing data skewness is crucial in real-world data analysis. This step is necessary to avoid developing models that inaccurately represent underlying patterns and trends, ensuring the validity of model predictions.
