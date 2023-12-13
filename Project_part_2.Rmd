@@ -1,3 +1,37 @@
+
+```{r}
+selected_columns <- c("Primary_Genre", "Size_MB", "Average_User_Rating", "Released_Year", "Free")
+
+df <- df[selected_columns]
+df$Free <- as.factor(df$Free)
+levels(df$Free) <- c(0, 1)
+
+# na_counts <- colSums(is.na(df))
+# print(na_counts)
+str(df)
+```
+
+### Logistic Regression
+<p>
+Why we are choosing Logistic Regression (I think - since the nature of the target variable is binomial in nature)
+</p>
+
+```{r}
+logistic_model_2 <- glm(Free ~ .,data = df, family = binomial)
+# summary(logistic_model_2)
+```
+
+## Confusion Matrix for Logistic Regression
+```{r}
+predictions_2 <- factor(ifelse(predict(logistic_model_2, type = "response") > 0.5, 1, 0), levels = levels(df$Free))
+actual_values_2 <- factor(df$Free, levels = levels(df$Free))
+
+conf_matrix_2 <- confusionMatrix(predictions_2, actual_values_2)
+print(conf_matrix_2)
+```
+<p>
+From the above model metrics we can see that, although the model's accuracy is over 90% and the specificity being over 99%
+</p>
 ```{r}
 logistic_model <- glm(Free ~ ., data = merged_df, family = binomial)
 summary(logistic_model)
