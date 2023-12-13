@@ -106,6 +106,42 @@ print(conf_matrix_2)
 <p>
 From the above model metrics we can see that, although the model's accuracy is over 90% and the specificity being over 99%
 </p>
+## Distribution of Target variable
+```{r}
+free_apps <- df[df$Free == 1, ]
+paid_apps <- df[df$Free == 0, ]
+
+print(nrow(free_apps))
+print(nrow(paid_apps))
+```
+
+<p>
+From the above result we can see that there is a huge disparity between the two levels in the target variable. Almost a 11:1 ratio. Models trained on this data will result in bias in their predictions. 
+</p>
+
+```{r}
+free_apps_sample <- free_apps %>% sample_n(102502)
+print(nrow(free_apps_sample))
+```
+
+```{r}
+merged_df <- rbind(free_apps_sample, paid_apps)
+str(merged_df)
+```
+
+```{r}
+print(head(merged_df))
+merged_df <- merged_df[sample(1:205004), ]
+print(head(merged_df))
+```
+
+```{r}
+merged_df_free_apps <- df[df$Free == 1, ]
+merged_df_paid_apps <- df[df$Free == 0, ]
+
+print(nrow(merged_df_free_apps))
+print(nrow(merged_df_paid_apps))
+```
 ```{r}
 logistic_model <- glm(Free ~ ., data = merged_df, family = binomial)
 summary(logistic_model)
