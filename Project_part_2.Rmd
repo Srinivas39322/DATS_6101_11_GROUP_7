@@ -1,1 +1,12 @@
+```{r}
+logistic_model <- glm(Free ~ ., data = merged_df, family = binomial)
+summary(logistic_model)
+```
 
+```{r}
+predictions <- factor(ifelse(predict(logistic_model, type = "response") > 0.5, 1, 0), levels = levels(merged_df$Free))
+actual_values <- factor(merged_df$Free, levels = levels(merged_df$Free))
+
+conf_matrix <- confusionMatrix(predictions, actual_values)
+print(conf_matrix)
+```
