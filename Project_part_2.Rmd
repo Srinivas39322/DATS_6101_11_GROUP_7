@@ -78,12 +78,7 @@ df$Updated_year <- as.numeric(df$Updated_Year)
 
 print(str(df))
 ```
-
-```{r}
-# num_unique_values <- length(unique(df$DeveloperId))
-# print(num_unique_values)
-```
-
+## Evaluating Feature Importance in App Pricing Prediction Using Random Forest
 ```{r}
 features <- c("Primary_Genre", "Content_Rating", "Size_MB", "Average_User_Rating", "Reviews", "Released_Year", "Updated_Year")
 target <- "Free"
@@ -94,7 +89,21 @@ print(importance)
 ```
 
 <p>
-From the MeanDegreeGini ---, we can see that ---, ---, ---, --- columns tend to have the highest impact on the target variable and further models are built using these columns as predictors.
+The importance of each feature is measured by the Mean Decrease in Gini coefficient, which indicates how much each feature contributes to the homogeneity of the nodes and leaves in the model. 
+
+- **Primary_Genre (23069)**: This feature has the highest importance score, suggesting that the genre of an app is a critical factor in determining its pricing model. Apps in certain genres are more likely to be free or paid, influencing the model's decision significantly.
+
+- **Size_MB (26683)**: The size of the app, measured in megabytes, is also a highly influential factor. This could indicate that larger apps (which might require more resources to develop) are more likely to be paid, or conversely, smaller apps tend to be free.
+
+- **Average_User_Rating (10302)**: This feature has a considerable impact on the model's predictions. It implies that the average user rating of an app influences its likelihood of being free or paid, possibly reflecting user expectations and satisfaction levels.
+
+- **Reviews (9688)**: The number of reviews an app receives is also an important factor. This could be due to the fact that more popular or widely used apps (which could correlate with a higher number of reviews) tend to have specific pricing strategies.
+
+- **Released_Year (11493) and Updated_Year (7814)**: The years when the app was released and last updated are moderately important. This might reflect market trends and changes in app pricing strategies over time.
+
+- **Content_Rating (2244)**: While still relevant, the content rating has the lowest importance score among the features. This suggests that while the intended audience age does play a role in pricing, it is less decisive compared to other factors like genre or size.
+
+In summary, the Random Forest model highlights the diverse factors that contribute to the pricing model of an app, with the genre and size being the most significant. These insights can guide app developers and marketers in understanding what aspects might influence an app's likelihood of being free or paid.
 </p>
 
 ```{r}
