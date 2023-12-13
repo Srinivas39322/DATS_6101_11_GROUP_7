@@ -242,6 +242,24 @@ rf_model <- randomForest(Free ~ ., data = merged_df, ntree = 500, mtry = sqrt(nc
 ```{r}
 summary(rf_model)
 ```
+<p>
+The Random Forest model was executed using the 'randomForest' package in R, with the target variable 'Free' predicted from various other predictor variables in the data frame. Key aspects of the model setup include:
+
+- **Model Specification**: The model was trained on the 'merged_df' dataset, with 500 trees (`ntree = 500`) and the number of variables tried at each split set to the square root of the total number of variables minus one (`mtry = sqrt(ncol(merged_df) - 1)`).
+- **Parallel Processing**: The model utilized parallel processing to enhance computational efficiency, employing all available cores (`ncores = detectCores()`).
+
+The model's output summary provides several important metrics:
+
+- **Predicted Values**: The model generated 205,004 predicted values, categorized as factors.
+- **Error Rate**: The 'err.rate' indicates the model's error rate across different trees.
+- **Confusion Matrix**: A 6-element confusion matrix offers a breakdown of prediction accuracy.
+- **Votes**: A matrix of size 410,008 indicates class votes for each observation.
+- **OOB Times**: The 'oob.times' (Out-of-Bag times) shows how often each data point was left out of the bootstrap sample and used in the error estimation.
+- **Variable Importance**: The 'importance' metric outlines the significance of each predictor variable in the model.
+- **Number of Trees and Variables per Split**: The model used 500 trees (`ntree`) and the defined number of variables per split (`mtry`).
+
+This Random Forest model provides a comprehensive analysis of the 'Free' variable in the dataset, employing advanced computational techniques for efficient and accurate predictions. The model's performance metrics, such as error rate and confusion matrix, offer valuable insights into its prediction accuracy and reliability.
+</p>
 
 ```{r}
 # Assuming 'your_test_data' is your testing dataset
